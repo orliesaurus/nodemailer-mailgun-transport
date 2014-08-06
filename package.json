@@ -1,0 +1,27 @@
+{
+  "name": "nodemailer-mailgun-transport",
+  "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
+  "version": "0.1",
+  "keywords": [
+    "email",
+    "nodemailer",
+    "mailgun"
+  ],
+  "maintainers": [
+    {
+      "name": "orlie",
+      "email": "orliesaurus@facebook.com",
+      "web": "http://mailgun.com"
+    }
+  ],
+  "bugs": {
+    "web": "https://github.com/orliesaurus/nodemailer-mailgun-transport/issues"
+  },
+  "licenses": [
+    {
+      "name": "MIT",
+      "url": "https://github.com/orliesaurus/nodemailer-mailgun-transport/blob/master/LICENSE"
+    }
+  ],
+  "homepage": "http://mailgun.com"
+}
