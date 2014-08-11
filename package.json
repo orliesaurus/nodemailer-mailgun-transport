@@ -2,7 +2,7 @@
   "name": "nodemailer-mailgun-transport",
   "main":"src/mailgun-transport.js",
   "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
-  "version": "0.1",
+  "version": "0.0.1",
   "keywords": [
     "email",
     "nodemailer",
@@ -11,7 +11,7 @@
   "maintainers": [
     {
       "name": "orlie",
-      "email": "orliesaurus@facebook.com",
+      "email": "support@opensauce.it",
       "web": "http://mailgun.com"
     }
   ],
