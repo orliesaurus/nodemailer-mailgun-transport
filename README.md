@@ -9,7 +9,7 @@ This is the transport plugin that goes with nodemailer to send email using [Mail
 Pow Pow.
 
 #How does it work
-Create a new file, install the dependencies [1] and look at the skeleton code below to get you started quickly!
+Create a new file, install the dependencies *[1]* and look at the skeleton code below to get you started quickly!
 
 
 
