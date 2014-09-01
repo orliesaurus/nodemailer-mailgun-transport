@@ -1,14 +1,21 @@
 nodemailer-mailgun-transport
 ============================
 
-##work in progress
-
-#What
+#What is this?
 nodemailer is an amazing node module to send emails within any of your nodejs apps.
 This is the transport plugin that goes with nodemailer to send email using [Mailgun](https://mailgun.com/)'s awesomeness!
 Pow Pow.
 
+
 #How does it work
+Based on this mailgun module and the nodemailer module, this is a transport layer, meaning it will allow you to send emails using nodemailer, but using the Mailgun API instead of an SMTP protocol!
+
+Nodemailer allows you to write code once and then swap out the transport so you can use different accounts on different providers.
+
+The Mailgun transport for nodemailer is great to use when SMTP is blocked on your server or you just prefer the reliability of the web api!
+
+#Quickstart - Example
+
 Create a new file, install the dependencies **[1]** and look at the skeleton code below to get you started quickly!
 
 
