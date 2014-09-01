@@ -27,10 +27,9 @@ Create a new file, install the dependencies [1] and look at the skeleton code be
     nodemailerMailgun.sendMail({
         from: 'myemail@example.com',
         //to: 'mycustomer@example.com',
-        to: ['orlando@mashape.com'],
+        to: ['orlando@anotherexample.com', 'orliesaurus@provider.com'], // An array if you have multiple recipients!
         subject: 'Hey you, awesome!',
         text: 'Mailgun rocks, pow pow!',
-        html: 'Mailgun rocks, <b>WOHOO</b>'
     });
     
 [1] Quickly install dependencies
