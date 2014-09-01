@@ -8,9 +8,9 @@ Pow Pow.
 
 
 #How does it work
-Based on this mailgun module and the nodemailer module, this is a transport layer, meaning it will allow you to send emails using nodemailer, but using the Mailgun API instead of an SMTP protocol!
+Based on [this mailgun module](https://github.com/shz/node-mailgun) and the [nodemailer module](https://github.com/andris9/Nodemailer) the Mailgun Transport was born. This is a transport layer, meaning it will allow you to send emails using nodemailer, using the Mailgun API instead of the SMTP protocol!
 
-Nodemailer allows you to write code once and then swap out the transport so you can use different accounts on different providers.
+Nodemailer allows you to write code once and then swap out the transport so you can use different accounts on different providers. On top of that it's a super solid way of sending emails quickly on your node app(s).
 
 The Mailgun transport for nodemailer is great to use when SMTP is blocked on your server or you just prefer the reliability of the web api!
 
