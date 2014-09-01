@@ -29,9 +29,16 @@ Create a new file, install the dependencies **[1]** and look at the skeleton cod
         to: ['orlando@anotherexample.com', 'orliesaurus@provider.com'], // An array if you have multiple recipients!
         subject: 'Hey you, awesome!',
         text: 'Mailgun rocks, pow pow!',
+    }, function (e,r) {
+    if (e) {
+    	console.log('Error: '+e); 
+    }
+    else {
+    console.log('Response: '+r);
+    }
     });
     
-[1] Quickly install dependencies
+**[1]** Quickly install dependencies
 
 	npm install nodemailer
 	npm install git+https://github.com/orliesaurus/nodemailer-mailgun-transport.git`
