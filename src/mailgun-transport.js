@@ -24,7 +24,8 @@ MailgunTransport.prototype.send = function (mail, callback) {
     from: mail.data.from,
     to: mail.data.to,
     subject: mail.data.subject,
-    text: mail.data.text
+    text: mail.data.text,
+    html: mail.data.html
   }
 
   mailgun.messages().send(data,
