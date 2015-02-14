@@ -40,7 +40,7 @@ nodemailerMailgun.sendMail({
   //You can use "html:" to send HTML email content. It's magic!
   html: '<b>Wow Big powerful letters</b>',
   //You can use "text:" to send plain-text content. It's oldschool!
-  text: 'Mailgun rocks, pow pow!',
+  text: 'Mailgun rocks, pow pow!'
 }, function (err, info) {
   if (err) {
     console.log('Error: ' + err);
