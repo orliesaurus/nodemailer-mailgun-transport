@@ -27,7 +27,7 @@ var mg = require('nodemailer-mailgun-transport');
 var auth = {
   auth: {
     api_key: 'key-1234123412341234',
-    domain: 'one of your domain names listed at your mailgun.com/app/domains'
+    domain: 'one of your domain names listed at your https://mailgun.com/app/domains'
   }
 }
 
