@@ -21,8 +21,6 @@ Create a new file, install the dependencies **[1]** and look at the skeleton cod
 
 ```javascript
 var nodemailer = require('nodemailer');
-var mg = require('nodemailer-mailgun-transport');
-
 // This is your API key that you retrieve from www.mailgun.com/cp (free up to 10K monthly emails)
 var auth = {
   auth: {
@@ -31,7 +29,8 @@ var auth = {
   }
 }
 
-var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+var mg = require('nodemailer-mailgun-transport')(auth);
+var nodemailerMailgun = nodemailer.createTransport(mg);
 
 nodemailerMailgun.sendMail({
   from: 'myemail@example.com',
