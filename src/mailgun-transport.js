@@ -1,5 +1,6 @@
 'use strict';
 
+var fs = require('fs');
 var Mailgun = require('mailgun-js');
 var packageData = require('../package.json');
 
@@ -20,6 +21,30 @@ function MailgunTransport(options) {
 
 
 MailgunTransport.prototype.send = function send(mail, callback) {
+  // convert nodemailer attachments to mailgun-js attachements
+  if(mail.data.attachments){
+    var a, b, aa = [];
+    for(var i in mail.data.attachments){
+      a = mail.data.attachments[i];
+      b = new this.mailgun.Attachment({
+        data        : a.path || undefined,
+        filename    : a.filename || undefined,
+        contentType : a.contentType || undefined,
+        knownLength : a.knownLength || undefined
+      });
+
+      aa.push(b);
+    }
+    mail.data.attachment = aa;
+
+    // delete obscelete attachements key
+    delete mail.data.attachments;
+  }
+
+  // for some reasons, this trigger and error if present...
+  // @todo: understand why (or where) its happening...
+  delete mail.data.headers;
+  
   this.mailgun.messages().send(mail.data, callback);
 };
 
