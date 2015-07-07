@@ -1,6 +1,5 @@
 'use strict';
 
-var fs = require('fs');
 var Mailgun = require('mailgun-js');
 var packageData = require('../package.json');
 
