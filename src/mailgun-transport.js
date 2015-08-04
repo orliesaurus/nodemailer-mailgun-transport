@@ -20,11 +20,12 @@ function MailgunTransport(options) {
 
 
 MailgunTransport.prototype.send = function send(mail, callback) {
+  var mailData = mail.data;
   // convert nodemailer attachments to mailgun-js attachements
-  if(mail.data.attachments){
+  if(mailData.attachments){
     var a, b, aa = [];
-    for(var i in mail.data.attachments){
-      a = mail.data.attachments[i];
+    for(var i in mailData.attachments){
+      a = mailData.attachments[i];
       b = new this.mailgun.Attachment({
         data        : a.path || undefined,
         filename    : a.filename || undefined,
@@ -34,16 +35,19 @@ MailgunTransport.prototype.send = function send(mail, callback) {
 
       aa.push(b);
     }
-    mail.data.attachment = aa;
+    mailData.attachment = aa;
 
-    // delete obscelete attachements key
-    delete mail.data.attachments;
   }
 
-  // for some reasons, this trigger and error if present...
-  // @todo: understand why (or where) its happening...
-  delete mail.data.headers;
-  
-  this.mailgun.messages().send(mail.data, callback);
+  this.mailgun.messages().send({
+    type       : mailData.type,
+    to         : mailData.to,
+    from       : mailData.from,
+    subject    : mailData.subject,
+    text       : mailData.text,
+    html       : mailData.html,
+    attachment : mailData.attachment
+  }, callback);
+
 };
 
