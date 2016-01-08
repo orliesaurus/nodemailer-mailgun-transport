@@ -44,6 +44,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     to         : mailData.to,
     from       : mailData.from,
     subject    : mailData.subject,
+    bcc        : mailData.bcc,
     text       : mailData.text,
     html       : mailData.html,
     attachment : mailData.attachment
