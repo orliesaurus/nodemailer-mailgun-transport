@@ -38,17 +38,22 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     mailData.attachment = aa;
 
   }
-
-  this.mailgun.messages().send({
+  
+  var options = {
     type       : mailData.type,
     to         : mailData.to,
     from       : mailData.from,
     subject    : mailData.subject,
-    bcc        : mailData.bcc,
     text       : mailData.text,
     html       : mailData.html,
     attachment : mailData.attachment
-  }, callback);
+  }
+  
+  if( mailData.bcc ){
+    options.bcc = mailData.bcc
+  }
+
+  this.mailgun.messages().send(options, callback);
 
 };
 
