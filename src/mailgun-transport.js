@@ -47,7 +47,8 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     bcc        : mailData.bcc,
     text       : mailData.text,
     html       : mailData.html,
-    attachment : mailData.attachment
+    attachment : mailData.attachment,
+    'h:Reply-To': mailData['headers']['Reply-To']
   }, callback);
 
 };
