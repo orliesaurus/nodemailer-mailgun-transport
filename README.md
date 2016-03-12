@@ -54,9 +54,34 @@ nodemailerMailgun.sendMail({
 });
 ```
 
+## Now with Handlebars templates
+
+If you pass the "html" key an object that contains a "template" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
+
+```javascript
+nodemailerMailgun.sendMail({
+  from: 'myemail@example.com',
+  to: 'recipient@domain.com', // An array if you have multiple recipients.
+  subject: 'Hey you, awesome!',
+  html: {
+    template: 'email.hbs',
+    context: {
+      variable1: 'value1',
+      variable2: 'value2'
+    }
+  }
+}, function (err, info) {
+  if (err) {
+    console.log('Error: ' + err);
+  }
+  else {
+    console.log('Response: ' + info);
+  }
+});
+```
+
 **[1]** Quickly install dependencies
 ```bash
 npm install nodemailer
 npm install git+https://github.com/orliesaurus/nodemailer-mailgun-transport.git
 ```
-
