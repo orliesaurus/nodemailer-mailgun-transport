@@ -27,7 +27,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     for(var i in mailData.attachments){
       a = mailData.attachments[i];
       b = new this.mailgun.Attachment({
-        data        : a.path || undefined,
+        data        : a.path || new Buffer(a.content) || undefined,
         filename    : a.filename || undefined,
         contentType : a.contentType || undefined,
         knownLength : a.knownLength || undefined
@@ -38,7 +38,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     mailData.attachment = aa;
 
   }
-  
+
   var options = {
     type       : mailData.type,
     to         : mailData.to,
@@ -48,7 +48,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     html       : mailData.html,
     attachment : mailData.attachment
   }
-  
+
   if( mailData.bcc ){
     options.bcc = mailData.bcc
   }
@@ -56,4 +56,3 @@ MailgunTransport.prototype.send = function send(mail, callback) {
   this.mailgun.messages().send(options, callback);
 
 };
-
