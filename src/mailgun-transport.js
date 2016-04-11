@@ -18,7 +18,6 @@ function MailgunTransport(options) {
   });
 }
 
-
 MailgunTransport.prototype.send = function send(mail, callback) {
   // convert nodemailer attachments to mailgun-js attachements
   if(mail.data.attachments){
