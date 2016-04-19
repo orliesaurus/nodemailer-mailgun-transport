@@ -25,9 +25,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
   var _this = this;
   series([
     function(done) {
-      if (typeof mailData.html === 'object') {
-        mailData.html.context = mailData.html.context || {};
-        cons.handlebars(mailData.html.template, mailData.html.context, function(err, html) {
+      if (mailData.template && mailData.template.name && mailData.template.engine) {
+        mailData.template.context = mailData.template.context || {};
+        cons[mailData.template.engine](mailData.template.name, mailData.template.context, function(err, html) {
           if (err) throw err;
           mailData.html = html;
           done();
@@ -37,7 +37,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       }
     },
     function(done) {
-      // convert nodemailer attachments to mailgun-js attachements
+      // convert nodemailer attachments to mailgun-js attachments
       if(mailData.attachments){
         var a, b, aa = [];
         for(var i in mailData.attachments){

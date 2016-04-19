@@ -54,21 +54,26 @@ nodemailerMailgun.sendMail({
 });
 ```
 
-## Now with Handlebars templates
+## Now with Consolidate.js templates
 
-If you pass the "html" key an object that contains a "template" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
+If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
 
 ```javascript
+var handlebars = require('handlebars');
+
+var contextObject = {
+  variable1: 'value1',
+  variable2: 'value2'
+};
+
 nodemailerMailgun.sendMail({
   from: 'myemail@example.com',
   to: 'recipient@domain.com', // An array if you have multiple recipients.
   subject: 'Hey you, awesome!',
-  html: {
-    template: 'email.hbs',
-    context: {
-      variable1: 'value1',
-      variable2: 'value2'
-    }
+  template: {
+    name: 'email.hbs',
+    engine: handlebars,
+    context: contextObject
   }
 }, function (err, info) {
   if (err) {
@@ -79,6 +84,8 @@ nodemailerMailgun.sendMail({
   }
 });
 ```
+
+You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass the variable to the `template` object.
 
 **[1]** Quickly install dependencies
 ```bash
