@@ -72,7 +72,7 @@ nodemailerMailgun.sendMail({
   subject: 'Hey you, awesome!',
   template: {
     name: 'email.hbs',
-    engine: handlebars,
+    engine: 'handlebars',
     context: contextObject
   }
 }, function (err, info) {
@@ -85,7 +85,7 @@ nodemailerMailgun.sendMail({
 });
 ```
 
-You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass the variable to the `template` object.
+You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass a string of the engine name to the `template` object. Please see the Consolidate.js documentation for supported engines.
 
 **[1]** Quickly install dependencies
 ```bash
