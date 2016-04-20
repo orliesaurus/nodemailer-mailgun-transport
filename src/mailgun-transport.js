@@ -53,7 +53,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     options.bcc = mailData.bcc
   }
 
-  this.mailgun.messages().send(options, callback);
+  this.mailgun.messages().send(options, function (err, data) {
+    callback(err || null, data);
+  });
 
 };
 
