@@ -23,11 +23,19 @@ MailgunTransport.prototype.send = function send(mail, callback) {
   var mailData = mail.data;
   // convert nodemailer attachments to mailgun-js attachements
   if(mailData.attachments){
-    var a, b, aa = [];
+    var a, b, data, aa = [];
     for(var i in mailData.attachments){
       a = mailData.attachments[i];
+
+      // mailgunjs does not encode content string to a buffer
+      if (typeof a.content === 'string') {
+        data = new Buffer(a.content, a.encoding);
+      } else {
+        data = a.content || a.path || undefined;
+      }
+
       b = new this.mailgun.Attachment({
-        data        : a.path || undefined,
+        data        : data,
         filename    : a.filename || undefined,
         contentType : a.contentType || undefined,
         knownLength : a.knownLength || undefined
