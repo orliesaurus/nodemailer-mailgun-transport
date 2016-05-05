@@ -3,6 +3,7 @@ I promise there is no easter egg :)
 
 #Contributors to this project in no particular order
 
+```
 mindmelting
 MaffooBristol
 giladbeeri 
@@ -13,4 +14,5 @@ wmcmurray
 ViktorPeleshko 
 trueter 
 JoshWillik 
-albertovasquez 
+albertovasquez
+```
