@@ -2,6 +2,34 @@
 
 var Mailgun = require('mailgun-js');
 var packageData = require('../package.json');
+var pickBy = require('lodash.pickby');
+var some = require('lodash.some');
+
+var whitelistExact = [
+  'from',
+  'to',
+  'cc',
+  'bcc',
+  'subject',
+  'text',
+  'html',
+  'attachment',
+  'inline',
+  'o:tag',
+  'o:campaign',
+  'o:dkim',
+  'o:deliverytime',
+  'o:testmode',
+  'o:tracking',
+  'o:tracking-clicks',
+  'o:tracking-opens',
+  'o:require-tls',
+  'o:skip-verification'
+];
+var whiteListPrefix = [
+  'h:',
+  'v:'
+];
 
 module.exports = function (options) {
   return new MailgunTransport(options);
@@ -36,22 +64,17 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       aa.push(b);
     }
     mailData.attachment = aa;
+  }
 
-  }
-  
-  var options = {
-    type       : mailData.type,
-    to         : mailData.to,
-    from       : mailData.from,
-    subject    : mailData.subject,
-    text       : mailData.text,
-    html       : mailData.html,
-    attachment : mailData.attachment
-  }
-  
-  if( mailData.bcc ){
-    options.bcc = mailData.bcc
-  }
+  var options = pickBy(mailData, function (key) {
+    if (whitelistExact.includes(key)) {
+      return true;
+    }
+
+    return some(whitelistPrefix, function (prefix) {
+      return key.startsWith(prefix);
+    });
+  });
 
   this.mailgun.messages().send(options, function (err, data) {
     callback(err || null, data);

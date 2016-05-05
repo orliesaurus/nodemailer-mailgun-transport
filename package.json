@@ -30,6 +30,8 @@
   ],
   "homepage": "http://mailgun.com",
   "dependencies": {
+    "lodash.pickby": "^4.3.0",
+    "lodash.some": "^4.3.0",
     "mailgun-js": "0.7.10"
   }
 }
