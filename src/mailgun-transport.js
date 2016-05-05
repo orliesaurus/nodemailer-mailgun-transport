@@ -66,7 +66,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     mailData.attachment = aa;
   }
 
-  var options = pickBy(mailData, function (key) {
+  var options = pickBy(mailData, function (value, key) {
     if (whitelistExact.indexOf(key) !== -1) {
       return true;
     }
