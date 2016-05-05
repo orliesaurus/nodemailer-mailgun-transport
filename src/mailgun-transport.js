@@ -26,7 +26,7 @@ var whitelistExact = [
   'o:require-tls',
   'o:skip-verification'
 ];
-var whiteListPrefix = [
+var whitelistPrefix = [
   'h:',
   'v:'
 ];
