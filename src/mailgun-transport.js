@@ -43,6 +43,7 @@ function MailgunTransport(options) {
     apiKey: this.options.auth.api_key,
     domain: this.options.auth.domain || ''
   });
+  this.messages = this.mailgun.messages();
 }
 
 
@@ -75,7 +76,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     });
   });
 
-  this.mailgun.messages().send(options, function (err, data) {
+  this.messages.send(options, function (err, data) {
     callback(err || null, data);
   });
 
