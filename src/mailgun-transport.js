@@ -14,7 +14,6 @@ var whitelistExact = [
   'text',
   'html',
   'attachment',
-  'inline',
   'o:tag',
   'o:campaign',
   'o:dkim',
