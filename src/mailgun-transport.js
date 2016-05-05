@@ -4,6 +4,7 @@ var Mailgun = require('mailgun-js');
 var packageData = require('../package.json');
 var pickBy = require('lodash.pickby');
 var some = require('lodash.some');
+var startsWith = require('lodash.startswith');
 
 var whitelistExact = [
   'from',
@@ -68,7 +69,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     }
 
     return some(whitelistPrefix, function (prefix) {
-      return key.startsWith(prefix);
+      return startsWith(key, prefix);
     });
   });
 

@@ -35,6 +35,7 @@
   "dependencies": {
     "lodash.pickby": "^4.3.0",
     "lodash.some": "^4.3.0",
+    "lodash.startswith": "^4.0.1",
     "mailgun-js": "0.7.10"
   },
   "devDependencies": {
