@@ -48,22 +48,18 @@ function MailgunTransport(options) {
 
 
 MailgunTransport.prototype.send = function send(mail, callback) {
+  var self = this;
   var mailData = mail.data;
   // convert nodemailer attachments to mailgun-js attachements
-  if(mailData.attachments){
-    var a, b, aa = [];
-    for(var i in mailData.attachments){
-      a = mailData.attachments[i];
-      b = new this.mailgun.Attachment({
-        data        : a.path || undefined,
-        filename    : a.filename || undefined,
-        contentType : a.contentType || undefined,
-        knownLength : a.knownLength || undefined
+  if (mailData.attachments) {
+    mailData.attachment = mailData.attachments.map(function (a) {
+      return new self.mailgun.Attachment({
+        data: a.path || undefined,
+        filename: a.filename || undefined,
+        contentType: a.contentType || undefined,
+        knownLength: a.knownLength || undefined
       });
-
-      aa.push(b);
-    }
-    mailData.attachment = aa;
+    });
   }
 
   var options = pickBy(mailData, function (value, key) {
@@ -79,6 +75,4 @@ MailgunTransport.prototype.send = function send(mail, callback) {
   this.messages.send(options, function (err, data) {
     callback(err || null, data);
   });
-
 };
-
