@@ -69,6 +69,36 @@ describe('when sending a mail', function () {
         done();
       });
     });
+
+    it('should convert attachments to Mailgun format', function (done) {
+      var self = this;
+
+      var data = {
+        from: 'from@bar.com',
+        to: 'to@bar.com',
+        subject: 'Subject',
+        text: 'Hello',
+        attachments: [{
+          path: '/',
+          filename: 'CONTRIBUTORS.md',
+          contentType: 'text/markdown',
+          knownLength: 122
+        }]
+      };
+      this.transport.send({
+        data: data
+      }, function () {
+        expect(self.transport.messages.send).to.have.been.calledOnce;
+        var call = self.transport.messages.send.getCall(0);
+        expect(call.args[0].attachment).to.have.length(1);
+        var attachment = call.args[0].attachment[0];
+        expect(attachment.data).to.equal('/');
+        expect(attachment.filename).to.equal('CONTRIBUTORS.md');
+        expect(attachment.contentType).to.equal('text/markdown');
+        expect(attachment.knownLength).to.equal(122);
+        done();
+      });
+    });
   });
 
   describe('with disallowed data', function () {
