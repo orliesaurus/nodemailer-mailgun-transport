@@ -7,6 +7,9 @@
     "type": "git",
     "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
   },
+  "scripts": {
+    "test": "mocha"
+  },
   "keywords": [
     "email",
     "nodemailer",
@@ -30,6 +33,16 @@
   ],
   "homepage": "http://mailgun.com",
   "dependencies": {
+    "lodash.pickby": "^4.3.0",
+    "lodash.some": "^4.3.0",
+    "lodash.startswith": "^4.0.1",
     "mailgun-js": "0.7.10"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^2.4.5",
+    "mocha-sinon": "^1.1.5",
+    "sinon": "^1.17.4",
+    "sinon-chai": "^2.8.0"
   }
 }
