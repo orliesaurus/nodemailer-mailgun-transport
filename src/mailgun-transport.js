@@ -16,7 +16,7 @@ var whitelistExact = [
   'subject',
   'text',
   'html',
-  'attachment',
+  'attachments',
   'o:tag',
   'o:campaign',
   'o:dkim',
@@ -52,7 +52,6 @@ function MailgunTransport(options) {
 MailgunTransport.prototype.send = function send(mail, callback) {
   var self = this;
   var mailData = mail.data;
-  var _this = this;
   series([
     function(done) {
       if (mailData.template && mailData.template.name && mailData.template.engine) {
@@ -80,13 +79,13 @@ MailgunTransport.prototype.send = function send(mail, callback) {
             data = a.content || a.path || undefined;
           }
 
-          b = new _this.mailgun.Attachment({
+          b = new self.mailgun.Attachment({
             data        : data,
             filename    : a.filename || undefined,
             contentType : a.contentType || undefined,
             knownLength : a.knownLength || undefined
           });
-        });
+        }
       }
 
       var options = pickBy(mailData, function (value, key) {
@@ -99,9 +98,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         });
       });
 
-      _this.messages.send(options, function (err, data) {
+      self.messages.send(options, function (err, data) {
         callback(err || null, data);
-      }
+      });
     }
   ], function(err) {
     if (err) throw err;
