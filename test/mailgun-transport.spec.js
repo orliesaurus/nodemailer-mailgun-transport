@@ -52,7 +52,7 @@ describe('when sending a mail', function () {
           subject: 'Subject',
           text: 'Hello',
           html: '<b>Hello</b>',
-          attachment: [],
+          attachments: [],
           'o:tag': 'Tag',
           'o:campaign': 'Campaign',
           'o:dkim': 'yes',
@@ -90,9 +90,9 @@ describe('when sending a mail', function () {
       }, function () {
         expect(self.transport.messages.send).to.have.been.calledOnce;
         var call = self.transport.messages.send.getCall(0);
-        expect(call.args[0].attachment).to.have.length(1);
-        var attachment = call.args[0].attachment[0];
-        expect(attachment.data).to.equal('/');
+        expect(call.args[0].attachments).to.have.length(1);
+        var attachment = call.args[0].attachments[0];
+        expect(attachment.path).to.equal('/');
         expect(attachment.filename).to.equal('CONTRIBUTORS.md');
         expect(attachment.contentType).to.equal('text/markdown');
         expect(attachment.knownLength).to.equal(122);
@@ -120,6 +120,37 @@ describe('when sending a mail', function () {
           to: 'to@bar.com',
           subject: 'Subject',
           text: 'Hello'
+        });
+        done();
+      });
+    });
+  });
+
+  describe('when referencing a template file', function() {
+    it('should insert variables and send the data as HTML', function() {
+      var self = this;
+
+      var data = {
+        from: 'from@bar.com',
+        to: 'to@bar.com',
+        subject: 'Subject',
+        template: {
+          name: 'test_template.hbs',
+          engine: 'handlebars',
+          context: {
+            variable1: 'Passed!'
+          }
+        },
+        foo: 'bar'
+      };
+      this.transport.send({
+        data: data
+      }, function () {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          subject: 'Subject',
+          html: '<body><h1>Passed!</h1></body>'
         });
         done();
       });
