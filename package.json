@@ -36,6 +36,8 @@
     "lodash.pickby": "^4.3.0",
     "lodash.some": "^4.3.0",
     "lodash.startswith": "^4.0.1",
+    "async-series": "0.0.1",
+    "consolidate": "^0.14.0",
     "mailgun-js": "0.7.10"
   },
   "devDependencies": {
