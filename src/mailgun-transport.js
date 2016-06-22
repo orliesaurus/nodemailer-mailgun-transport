@@ -16,7 +16,7 @@ var whitelistExact = [
   'subject',
   'text',
   'html',
-  'attachments',
+  'attachment',
   'o:tag',
   'o:campaign',
   'o:dkim',
@@ -67,10 +67,10 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     },
     function(done) {
       // convert nodemailer attachments to mailgun-js attachements
-      if(mailData.attachments){
+      if(mailData.attachment){
         var a, b, data, aa = [];
-        for(var i in mailData.attachments){
-          a = mailData.attachments[i];
+        for(var i in mailData.attachment){
+          a = mailData.attachment[i];
 
           // mailgunjs does not encode content string to a buffer
           if (typeof a.content === 'string') {
