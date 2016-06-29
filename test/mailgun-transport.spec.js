@@ -27,7 +27,7 @@ describe('when sending a mail', function () {
         subject: 'Subject',
         text: 'Hello',
         html: '<b>Hello</b>',
-        attachment: [],
+        attachments: [],
         'o:tag': 'Tag',
         'o:campaign': 'Campaign',
         'o:dkim': 'yes',
@@ -78,7 +78,7 @@ describe('when sending a mail', function () {
         to: 'to@bar.com',
         subject: 'Subject',
         text: 'Hello',
-        attachment: [{
+        attachments: [{
           path: '/',
           filename: 'CONTRIBUTORS.md',
           contentType: 'text/markdown',
@@ -92,7 +92,7 @@ describe('when sending a mail', function () {
         var call = self.transport.messages.send.getCall(0);
         expect(call.args[0].attachment).to.have.length(1);
         var attachment = call.args[0].attachment[0];
-        expect(attachment.path).to.equal('/');
+        expect(attachment.data).to.equal('/');
         expect(attachment.filename).to.equal('CONTRIBUTORS.md');
         expect(attachment.contentType).to.equal('text/markdown');
         expect(attachment.knownLength).to.equal(122);
