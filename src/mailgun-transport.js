@@ -68,10 +68,12 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     },
     function(done) {
       // convert nodemailer attachments to mailgun-js attachements
-      if(mailData.attachment){
+      if(mailData.attachments){
         var a, b, data, aa = [];
-        for(var i in mailData.attachment){
-          a = mailData.attachment[i];
+        mailData.attachment = [];
+
+        for(var i in mailData.attachments){
+          a = mailData.attachments[i];
 
           // mailgunjs does not encode content string to a buffer
           if (typeof a.content === 'string') {
@@ -86,6 +88,8 @@ MailgunTransport.prototype.send = function send(mail, callback) {
             contentType : a.contentType || undefined,
             knownLength : a.knownLength || undefined
           });
+
+          mailData.attachment.push(b);
         }
       }
 
