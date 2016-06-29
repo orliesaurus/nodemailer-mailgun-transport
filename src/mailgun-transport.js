@@ -45,7 +45,8 @@ function MailgunTransport(options) {
 
   this.mailgun = Mailgun({
     apiKey: this.options.auth.api_key,
-    domain: this.options.auth.domain || ''
+    domain: this.options.auth.domain || '',
+    proxy: this.options.proxy || false
   });
   this.messages = this.mailgun.messages();
 }
