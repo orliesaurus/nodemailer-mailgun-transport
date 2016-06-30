@@ -67,27 +67,35 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       }
     },
     function(done) {
-      // convert nodemailer attachments to mailgun-js attachements
-      if(mailData.attachment){
-        var a, b, data, aa = [];
-        for(var i in mailData.attachment){
-          a = mailData.attachment[i];
+        // convert nodemailer attachments to mailgun-js attachements
+        if(mailData.attachments){
+          var a, b, data, aa = [];
+          for(var i in mailData.attachments){
+            a = mailData.attachments[i];
 
-          // mailgunjs does not encode content string to a buffer
-          if (typeof a.content === 'string') {
-            data = new Buffer(a.content, a.encoding);
-          } else {
-            data = a.content || a.path || undefined;
+            // mailgunjs does not encode content string to a buffer
+            if (typeof a.content === 'string') {
+              data = new Buffer(a.content, a.encoding);
+            } else {
+              data = a.content || a.path || undefined;
+            }
+            //console.log(data);
+            b = new self.mailgun.Attachment({
+              data        : data,
+              filename    : a.filename || undefined,
+              contentType : a.contentType || undefined,
+              knownLength : a.knownLength || undefined
+            });
+
+            aa.push(b);
+            //console.log(b);
           }
 
-          b = new self.mailgun.Attachment({
-            data        : data,
-            filename    : a.filename || undefined,
-            contentType : a.contentType || undefined,
-            knownLength : a.knownLength || undefined
-          });
+           mailData.attachment = aa;
+           delete mailData.attachments;
         }
-      }
+
+      delete mail.data.headers;
 
       var options = pickBy(mailData, function (value, key) {
         if (whitelistExact.indexOf(key) !== -1) {
