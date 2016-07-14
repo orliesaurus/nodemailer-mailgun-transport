@@ -53,6 +53,32 @@ nodemailerMailgun.sendMail({
   }
 });
 ```
+## Buffer support
+
+Example:
+
+```
+var mailOptions = {
+    ...
+    attachments: [
+        {
+            filename: 'text2.txt',
+            content: new Buffer('hello world!','utf-8')
+        },
+```
+
+with encoded string as attachment content:
+
+```
+var mailOptions = {
+    ...
+    attachments: [
+        {
+            filename: 'text1.txt',
+            content: 'aGVsbG8gd29ybGQh',
+            encoding: 'base64'
+        },
+```
 
 ## Now with Consolidate.js templates
 
