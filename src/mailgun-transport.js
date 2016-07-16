@@ -17,6 +17,7 @@ var whitelistExact = [
   'text',
   'html',
   'attachment',
+  'inline',
   'recipient-variables',
   'o:tag',
   'o:campaign',
@@ -54,10 +55,10 @@ MailgunTransport.prototype.send = function send(mail, callback) {
   var self = this;
   var mailData = mail.data;
   series([
-    function(done) {
+    function (done) {
       if (mailData.template && mailData.template.name && mailData.template.engine) {
         mailData.template.context = mailData.template.context || {};
-        cons[mailData.template.engine](mailData.template.name, mailData.template.context, function(err, html) {
+        cons[mailData.template.engine](mailData.template.name, mailData.template.context, function (err, html) {
           if (err) throw err;
           mailData.html = html;
           done();
@@ -66,34 +67,39 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         done();
       }
     },
-    function(done) {
-        // convert nodemailer attachments to mailgun-js attachements
-        if(mailData.attachments){
-          var a, b, data, aa = [];
-          for(var i in mailData.attachments){
-            a = mailData.attachments[i];
+    function (done) {
+      // convert nodemailer attachments to mailgun-js attachements
+      if (mailData.attachments) {
+        var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
+        for (var i in mailData.attachments) {
+          attachment = mailData.attachments[i];
 
-            // mailgunjs does not encode content string to a buffer
-            if (typeof a.content === 'string') {
-              data = new Buffer(a.content, a.encoding);
-            } else {
-              data = a.content || a.path || undefined;
-            }
-            //console.log(data);
-            b = new self.mailgun.Attachment({
-              data        : data,
-              filename    : a.filename || undefined,
-              contentType : a.contentType || undefined,
-              knownLength : a.knownLength || undefined
-            });
-
-            aa.push(b);
-            //console.log(b);
+          // mailgunjs does not encode content string to a buffer
+          if (typeof attachment.content === 'string') {
+            data = new Buffer(attachment.content, attachment.encoding);
+          } else {
+            data = attachment.content || attachment.path || undefined;
           }
+          //console.log(data);
+          mailgunAttachment = new self.mailgun.Attachment({
+            data: data,
+            filename: attachment.cid || attachment.filename || undefined,
+            contentType: attachment.contentType || undefined,
+            knownLength: attachment.knownLength || undefined
+          });
 
-           mailData.attachment = aa;
-           delete mailData.attachments;
+          if (attachment.cid) {
+            inlineList.push(mailgunAttachment);
+          } else {
+            attachmentList.push(mailgunAttachment);
+          }
+          //console.log(b);
         }
+
+        mailData.attachment = attachmentList;
+        mailData.inline = inlineList;
+        delete mailData.attachments;
+      }
 
       delete mail.data.headers;
 
@@ -111,7 +117,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         callback(err || null, data);
       });
     }
-  ], function(err) {
+  ], function (err) {
     if (err) throw err;
   });
 };
