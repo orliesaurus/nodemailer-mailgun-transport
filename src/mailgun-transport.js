@@ -84,7 +84,8 @@ MailgunTransport.prototype.send = function send(mail, callback) {
               data        : data,
               filename    : a.filename || undefined,
               contentType : a.contentType || undefined,
-              knownLength : a.knownLength || undefined
+              knownLength : a.knownLength || undefined,
+              inline      : a.cid || undefined
             });
 
             aa.push(b);
