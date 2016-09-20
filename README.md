@@ -14,6 +14,8 @@ Nodemailer allows you to write code once and then swap out the transport so you 
 
 The Mailgun transport for nodemailer is great to use when SMTP is blocked on your server or you just prefer the reliability of the web api!
 
+## Support the project
+I know this is a tiny module but many people use it in production (high5 to all of us) - if you happen to use this module please click the star button - it means a lot to all the contributors ![](https://i.snag.gy/oef5di.jpg)
 ## Quickstart - Example
 
 Create a new file, install the dependencies **[1]** and look at the skeleton code below to get you started quickly!
