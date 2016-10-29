@@ -82,6 +82,24 @@ var mailOptions = {
         },
 ```
 
+with encoded string as an inline attachment:
+
+```
+// Replace `filename` with `cid`
+var mailOptions = {
+    ...
+    attachments: [
+        {
+            cid: 'logo.png',
+            content: 'aGVsbG8gd29ybGQh',
+            encoding: 'base64'
+        },
+```
+```
+// Reference the `cid` in your email template file
+<img src="cid:logo.png" alt="logo" />
+```
+
 ## Now with Consolidate.js templates
 
 If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
