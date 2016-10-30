@@ -96,7 +96,7 @@ var mailOptions = {
         },
 ```
 ```
-// Reference the `cid` in your email template file
+<!-- Reference the `cid` in your email template file -->
 <img src="cid:logo.png" alt="logo" />
 ```
 
