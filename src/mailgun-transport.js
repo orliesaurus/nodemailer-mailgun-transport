@@ -67,6 +67,32 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         done();
       }
     },
+     function(done){
+      //convert address objects or array of objects to strings if present
+      var targets =['from','to','cc','bcc'];
+      var count =0;
+      for (var target of targets){
+        var addrsData = mailData[target];
+        if(addrsData !== null && (typeof addrsData === 'object' || Array.isArray(addrsData))){
+          var addrs= [];
+          var addresses = typeof addrsData === 'object' ? [addrsData] : addrsData;
+          for (var addr of addresses ){ 
+                if (Array.isArray(addr)){
+                  for (var add of addr){
+                    var final = add.name ? add.name + ' <' + add.address + '>' : add.address
+                     addrs.push(final);
+                  }
+                } else{  
+                   var final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address  
+                   addrs.push(final);
+                }
+          }
+          mailData[target] = addrs.join();
+        }
+        count++;
+        count == 4 ? done():null;
+      }
+    },
     function (done) {
       // convert nodemailer attachments to mailgun-js attachements
       if (mailData.attachments) {
