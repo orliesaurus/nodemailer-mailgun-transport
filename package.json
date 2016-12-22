@@ -2,7 +2,7 @@
   "name": "nodemailer-mailgun-transport",
   "main": "src/mailgun-transport.js",
   "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "repository": {
     "type": "git",
     "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
