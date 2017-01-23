@@ -100,12 +100,18 @@ var mailOptions = {
 <img src="cid:logo.png" alt="logo" />
 ```
 ## Address objects
-The "from", "to", "cc", and "bcc" fields support an address object or array of address objects. Each "name" and "address" are converted to  ```"name <address>"``` format.  "name" is optional, "address" required.
+The "from", "to", "cc", and "bcc" fields support an address object or array of address objects. Each "name" and "address" are converted to  ```"name <address>"``` format.  "name" is optional, "address" is required. Missing or null address in object is skipped.
+
 Examples:
 ```
  from: {name: 'Sales', address: 'sales@example.com'},
  to: [{name:'Mary', address:'mary@differentexample.com'}, {address:'john@anotherexample.com'}]
 
+```
+is converted to:
+```
+  from: 'Sales <sales@example.com>',
+  to: 'Mary <mary@differentexample.com>,john@anotherexample.com'
 ```
 ## Now with Consolidate.js templates
 

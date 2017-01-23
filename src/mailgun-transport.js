@@ -79,12 +79,16 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           for (var addr of addresses ){ 
                 if (Array.isArray(addr)){
                   for (var add of addr){
-                    var final = add.name ? add.name + ' <' + add.address + '>' : add.address
-                     addrs.push(final);
+                    if(add.address){
+                      var final = add.name ? add.name + ' <' + add.address + '>' : add.address
+                      addrs.push(final);
+                    }
                   }
                 } else{  
-                   var final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address  
-                   addrs.push(final);
+                  if(addr.address){
+                    var final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address  
+                    addrs.push(final);
+                  }
                 }
           }
           mailData[target] = addrs.join();
