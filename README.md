@@ -149,5 +149,5 @@ You can use any of the templating engines supported by [Consolidate.js](https://
 **[1]** Quickly install dependencies
 ```bash
 npm install nodemailer
-npm install git+https://github.com/orliesaurus/nodemailer-mailgun-transport.git
+npm install nodemailer-mailgun-transport
 ```
