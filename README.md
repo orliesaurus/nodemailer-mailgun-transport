@@ -99,7 +99,20 @@ var mailOptions = {
 <!-- Reference the `cid` in your email template file -->
 <img src="cid:logo.png" alt="logo" />
 ```
+## Address objects
+The "from", "to", "cc", and "bcc" fields support an address object or array of address objects. Each "name" and "address" are converted to  ```"name <address>"``` format.  "name" is optional, "address" is required. Missing or null address in object is skipped.
 
+Examples:
+```
+ from: {name: 'Sales', address: 'sales@example.com'},
+ to: [{name:'Mary', address:'mary@differentexample.com'}, {address:'john@anotherexample.com'}]
+
+```
+is converted to:
+```
+  from: 'Sales <sales@example.com>',
+  to: 'Mary <mary@differentexample.com>,john@anotherexample.com'
+```
 ## Now with Consolidate.js templates
 
 If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:

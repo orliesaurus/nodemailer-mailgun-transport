@@ -156,4 +156,61 @@ describe('when sending a mail', function () {
       });
     });
   });
+
+ describe('with simple address objects', function () {
+    it('should convert to standard address format', function (done) {
+      var self = this;
+
+      var data = {
+        from: {"name":'From', "address":'from@bar.com'},
+        to: {"name":'To', "address":'to@bar.com'},
+        cc: {"name":'Cc', "address":'cc@bar.com'},
+        bcc: {"name":'Bcc', "address":'bcc@bar.com'},
+        subject: 'Subject',
+        text: 'Hello',
+      };
+      this.transport.send({
+        data: data
+      }, function () {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'From <from@bar.com>',
+          to: 'To <to@bar.com>',
+          cc: 'Cc <cc@bar.com>',
+          bcc: 'Bcc <bcc@bar.com>',
+          subject: 'Subject',
+          text: 'Hello'
+        });
+        done();
+      });
+    });
+  });
+
+   describe('with address objects missing data or having multiple entries (array of objects)', function () {
+    it('should convert to standard address format and skip missing data', function (done) {
+      var self = this;
+
+      var data = {
+        from: {"name": null, "address":'from@bar.com'},
+        to: [{"name":'To', "address":'to@bar.com'}, {"name":null, "address":"to2@bar.com"}, {"address":"to3@bar.com"},{"name":undefined,"address":undefined}],
+        cc: [{"name":'Cc', "address":'cc@bar.com'}, {"name":null, "address":"cc2@bar.com"}, {"address":"cc3@bar.com"},{"name":"","address":""}],
+        bcc: [{"name":'Bcc', "address":'bcc@bar.com'}, {"name":null, "address":"bcc2@bar.com"}, {"address":"bcc3@bar.com"},{"name":"Bcc4"}],
+        subject: 'Subject',
+        text: 'Hello',
+      };
+      this.transport.send({
+        data: data
+      }, function () {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'from@bar.com',
+          to: 'To <to@bar.com>,to2@bar.com,to3@bar.com',
+          cc: 'Cc <cc@bar.com>,cc2@bar.com,cc3@bar.com',
+          bcc: 'Bcc <bcc@bar.com>,bcc2@bar.com,bcc3@bar.com',
+          subject: 'Subject',
+          text: 'Hello'
+        });
+        done();
+      });
+    });
+  });
+
 });
