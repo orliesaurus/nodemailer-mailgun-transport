@@ -99,6 +99,30 @@ describe('when sending a mail', function () {
         done();
       });
     });
+
+    it('allow using array to assgin multiple receiver', function (done) {
+      var self = this;
+
+      var data = {
+        from: 'from@bar.com',
+        to: ['to@bar.com', 'to1@bar.com'],
+        subject: 'Subject',
+        text: 'Hello',
+        html: '<b>Hello</b>',
+      };
+      this.transport.send({
+        data: data
+      }, function () {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'from@bar.com',
+          to: 'to@bar.com,to1@bar.com',
+          subject: 'Subject',
+          text: 'Hello',
+          html: '<b>Hello</b>',
+        });
+        done();
+      }); 
+    });
   });
 
   describe('with disallowed data', function () {

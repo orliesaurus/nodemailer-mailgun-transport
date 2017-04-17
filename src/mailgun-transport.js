@@ -79,9 +79,11 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           for (var addr of addresses ){ 
                 if (Array.isArray(addr)){
                   for (var add of addr){
-                    if(add.address){
+                    if(typeof add === 'object' && add.address){
                       var final = add.name ? add.name + ' <' + add.address + '>' : add.address
                       addrs.push(final);
+                    } else if (typeof add === 'string') {
+                      addrs.push(add)
                     }
                   }
                 } else{  
