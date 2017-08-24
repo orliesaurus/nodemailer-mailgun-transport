@@ -76,7 +76,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         if(addrsData !== null && (typeof addrsData === 'object' || Array.isArray(addrsData))){
           var addrs= [];
           var addresses = typeof addrsData === 'object' ? [addrsData] : addrsData;
-          for (var addr of addresses ){ 
+          for (var addr of addresses ){
                 if (Array.isArray(addr)){
                   for (var add of addr){
                     if(typeof add === 'object' && add.address){
@@ -86,9 +86,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
                       addrs.push(add)
                     }
                   }
-                } else{  
+                } else{
                   if(addr.address){
-                    var final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address  
+                    var final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address
                     addrs.push(final);
                   }
                 }
@@ -146,6 +146,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       });
 
       self.messages.send(options, function (err, data) {
+        if (data) {
+          data.messageId = data.id;
+        }
         callback(err || null, data);
       });
     }

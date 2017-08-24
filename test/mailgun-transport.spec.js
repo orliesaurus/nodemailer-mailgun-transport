@@ -12,7 +12,10 @@ describe('when sending a mail', function () {
       }
     });
 
-    this.sinon.stub(this.transport.messages, 'send').callsArg(1);
+    this.sinon.stub(this.transport.messages, 'send').callsArgWith(1, null, {
+      id: '<20111114174239.25659.5817@samples.mailgun.org>',
+      message: 'Queued. Thank you.'
+    });
   });
 
   describe('with allowed data', function () {
@@ -43,7 +46,7 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledWith({
           from: 'from@bar.com',
           to: 'to@bar.com',
@@ -66,6 +69,8 @@ describe('when sending a mail', function () {
           'h:Reply-To': 'reply@bar.com',
           'v:foo': 'bar'
         });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
       });
     });
@@ -87,7 +92,7 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledOnce;
         var call = self.transport.messages.send.getCall(0);
         expect(call.args[0].attachment).to.have.length(1);
@@ -96,6 +101,8 @@ describe('when sending a mail', function () {
         expect(attachment.filename).to.equal('CONTRIBUTORS.md');
         expect(attachment.contentType).to.equal('text/markdown');
         expect(attachment.knownLength).to.equal(122);
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
       });
     });
@@ -112,7 +119,7 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledWith({
           from: 'from@bar.com',
           to: 'to@bar.com,to1@bar.com',
@@ -120,8 +127,10 @@ describe('when sending a mail', function () {
           text: 'Hello',
           html: '<b>Hello</b>',
         });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
-      }); 
+      });
     });
   });
 
@@ -138,13 +147,15 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledWith({
           from: 'from@bar.com',
           to: 'to@bar.com',
           subject: 'Subject',
           text: 'Hello'
         });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
       });
     });
@@ -169,13 +180,15 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledWith({
           from: 'from@bar.com',
           to: 'to@bar.com',
           subject: 'Subject',
           html: '<body><h1>Passed!</h1></body>'
         });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
       });
     });
@@ -195,7 +208,7 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledWith({
           from: 'From <from@bar.com>',
           to: 'To <to@bar.com>',
@@ -204,6 +217,8 @@ describe('when sending a mail', function () {
           subject: 'Subject',
           text: 'Hello'
         });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
       });
     });
@@ -223,7 +238,7 @@ describe('when sending a mail', function () {
       };
       this.transport.send({
         data: data
-      }, function () {
+      }, function (err, info) {
         expect(self.transport.messages.send).to.have.been.calledWith({
           from: 'from@bar.com',
           to: 'To <to@bar.com>,to2@bar.com,to3@bar.com',
@@ -232,6 +247,8 @@ describe('when sending a mail', function () {
           subject: 'Subject',
           text: 'Hello'
         });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
         done();
       });
     });
