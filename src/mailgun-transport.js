@@ -137,7 +137,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         delete mailData.attachments;
       }
 
-      delete mail.data.headers;
+      delete mailData.headers;
 
       transformList.forEach( function(key) {
         if (mailData[key]) {
