@@ -194,7 +194,7 @@ describe('when sending a mail', function () {
     });
   });
 
- describe('with simple address objects', function () {
+  describe('with simple address objects', function () {
     it('should convert to standard address format', function (done) {
       var self = this;
 
@@ -224,7 +224,7 @@ describe('when sending a mail', function () {
     });
   });
 
-   describe('with address objects missing data or having multiple entries (array of objects)', function () {
+  describe('with address objects missing data or having multiple entries (array of objects)', function () {
     it('should convert to standard address format and skip missing data', function (done) {
       var self = this;
 
@@ -233,6 +233,7 @@ describe('when sending a mail', function () {
         to: [{"name":'To', "address":'to@bar.com'}, {"name":null, "address":"to2@bar.com"}, {"address":"to3@bar.com"},{"name":undefined,"address":undefined}],
         cc: [{"name":'Cc', "address":'cc@bar.com'}, {"name":null, "address":"cc2@bar.com"}, {"address":"cc3@bar.com"},{"name":"","address":""}],
         bcc: [{"name":'Bcc', "address":'bcc@bar.com'}, {"name":null, "address":"bcc2@bar.com"}, {"address":"bcc3@bar.com"},{"name":"Bcc4"}],
+        replyTo: {"name":'ReplyTo', "address":'replyto@bar.com'},
         subject: 'Subject',
         text: 'Hello',
       };
@@ -244,6 +245,7 @@ describe('when sending a mail', function () {
           to: 'To <to@bar.com>,to2@bar.com,to3@bar.com',
           cc: 'Cc <cc@bar.com>,cc2@bar.com,cc3@bar.com',
           bcc: 'Bcc <bcc@bar.com>,bcc2@bar.com,bcc3@bar.com',
+          'h:Reply-To': 'ReplyTo <replyto@bar.com>',
           subject: 'Subject',
           text: 'Hello'
         });
@@ -254,4 +256,31 @@ describe('when sending a mail', function () {
     });
   });
 
+  describe('with a replyTo address set', function () {
+    it('should convert it to "h:Reply-To" property ', function (done) {
+      var self = this;
+
+      var data = {
+        from: 'from@bar.com',
+        to: 'to@bar.com',
+        replyTo: 'replyto@bar.com',
+        subject: 'Subject',
+        text: 'Hello',
+      };
+      this.transport.send({
+        data: data
+      }, function (err, info) {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          'h:Reply-To': 'replyto@bar.com',
+          subject: 'Subject',
+          text: 'Hello'
+        });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
+        done();
+      });
+    });
+  });
 });

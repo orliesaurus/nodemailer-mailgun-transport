@@ -35,6 +35,10 @@ var whitelistPrefix = [
   'v:'
 ];
 
+var transformList = [
+  'replyTo'
+];
+
 module.exports = function (options) {
   return new MailgunTransport(options);
 };
@@ -67,9 +71,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         done();
       }
     },
-     function(done){
+    function(done){
       //convert address objects or array of objects to strings if present
-      var targets =['from','to','cc','bcc'];
+      var targets =['from','to','cc','bcc','replyTo'];
       var count =0;
       for (var target of targets){
         var addrsData = mailData[target];
@@ -96,7 +100,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           mailData[target] = addrs.join();
         }
         count++;
-        count == 4 ? done():null;
+        count == 5 ? done():null;
       }
     },
     function (done) {
@@ -133,7 +137,17 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         delete mailData.attachments;
       }
 
-      delete mail.data.headers;
+      delete mailData.headers;
+
+      transformList.forEach( function(key) {
+        if (mailData[key]) {
+          switch (key) {
+            case 'replyTo': 
+              mailData['h:Reply-To'] = mailData[key];
+              delete mailData[key];
+          }
+        }
+      });
 
       var options = pickBy(mailData, function (value, key) {
         if (whitelistExact.indexOf(key) !== -1) {
