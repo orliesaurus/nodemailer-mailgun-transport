@@ -1,5 +1,6 @@
 'use strict';
 
+var co = require("co");
 var Mailgun = require('mailgun-js');
 var cons = require('consolidate');
 var packageData = require('../package.json');
@@ -58,6 +59,13 @@ function MailgunTransport(options) {
 MailgunTransport.prototype.send = function send(mail, callback) {
   var self = this;
   var mailData = mail.data;
+
+  function resolveContent(data, key){
+    return new Promise((resolve, reject)=>{
+      mail.resolveContent(data, key, (e, c)=>e ? reject(e) : resolve(c))
+    });
+  }
+
   series([
     function (done) {
       if (mailData.template && mailData.template.name && mailData.template.engine) {
@@ -104,37 +112,36 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       }
     },
     function (done) {
-      // convert nodemailer attachments to mailgun-js attachements
-      if (mailData.attachments) {
-        var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
-        for (var i in mailData.attachments) {
-          attachment = mailData.attachments[i];
+      co(function*(){
+        // convert nodemailer attachments to mailgun-js attachements
+        if (mailData.attachments) {
+          var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
+          for (var i in mailData.attachments) {
+            attachment = mailData.attachments[i];
 
-          // mailgunjs does not encode content string to a buffer
-          if (typeof attachment.content === 'string') {
-            data = new Buffer(attachment.content, attachment.encoding);
-          } else {
-            data = attachment.content || attachment.path || undefined;
+            // mailgunjs does not encode content string to a buffer
+            if (typeof attachment.content === 'string') {
+                data = new Buffer(attachment.content, attachment.encoding);
+            } else {
+                data = yield resolveContent(mailData.attachments, i)
+            }
+            mailgunAttachment = new self.mailgun.Attachment({
+                data: data,
+                filename: attachment.cid || attachment.filename || undefined,
+                contentType: attachment.contentType || undefined,
+                knownLength: attachment.knownLength || undefined
+            });
+
+            if (attachment.cid) {
+                inlineList.push(mailgunAttachment);
+            } else {
+                attachmentList.push(mailgunAttachment);
+            }
           }
-          //console.log(data);
-          mailgunAttachment = new self.mailgun.Attachment({
-            data: data,
-            filename: attachment.cid || attachment.filename || undefined,
-            contentType: attachment.contentType || undefined,
-            knownLength: attachment.knownLength || undefined
-          });
 
-          if (attachment.cid) {
-            inlineList.push(mailgunAttachment);
-          } else {
-            attachmentList.push(mailgunAttachment);
-          }
-          //console.log(b);
-        }
-
-        mailData.attachment = attachmentList;
-        mailData.inline = inlineList;
-        delete mailData.attachments;
+          mailData.attachment = attachmentList;
+          mailData.inline = inlineList;
+          delete mailData.attachments;
       }
 
       delete mailData.headers;
@@ -142,7 +149,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       transformList.forEach( function(key) {
         if (mailData[key]) {
           switch (key) {
-            case 'replyTo': 
+            case 'replyTo':
               mailData['h:Reply-To'] = mailData[key];
               delete mailData[key];
           }
@@ -160,11 +167,13 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       });
 
       self.messages.send(options, function (err, data) {
-        if (data) {
-          data.messageId = data.id;
-        }
-        callback(err || null, data);
-      });
+          if (data) {
+            data.messageId = data.id;
+          }
+          callback(err || null, data);
+        });
+      })
+
     }
   ], function (err) {
     if (err) throw err;

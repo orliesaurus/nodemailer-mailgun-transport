@@ -33,6 +33,7 @@
   ],
   "homepage": "http://mailgun.com",
   "dependencies": {
+    "co": "^4.6.0",
     "lodash.pickby": "^4.3.0",
     "lodash.some": "^4.3.0",
     "lodash.startswith": "^4.0.1",
