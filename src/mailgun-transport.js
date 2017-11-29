@@ -31,6 +31,7 @@ var whitelistExact = [
   'o:require-tls',
   'o:skip-verification'
 ];
+
 var whitelistPrefix = [
   'h:',
   'v:'
@@ -109,7 +110,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         count == 4 ? done():null;
       }
     },
-    function (done) {
+    async function (done) {
       // convert nodemailer attachments to mailgun-js attachements
       if (mailData.attachments) {
         var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
@@ -120,7 +121,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           let remoteFile = attachment.href || attachment.full_path || undefined
 
           if (remoteFile  && isURL(remoteFile)) {
-            mailgunAttachment = request(attachment.full_path);
+            mailgunAttachment = await request(attachment.full_path);
           }
           else {
             if (typeof attachment.content === 'string') {
