@@ -31,7 +31,6 @@ var whitelistExact = [
   'o:require-tls',
   'o:skip-verification'
 ];
-
 var whitelistPrefix = [
   'h:',
   'v:'
@@ -116,12 +115,10 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
         for (var i in mailData.attachments) {
           attachment = mailData.attachments[i];
-
           // mailgunjs does not encode content string to a buffer
-          let remoteFile = attachment.href || attachment.full_path || undefined
-
+          let remoteFile = attachment.path || attachment.href || attachment.full_path || undefined
           if (remoteFile  && isURL(remoteFile)) {
-            mailgunAttachment = await request(attachment.full_path);
+            mailgunAttachment = await request(remoteFile);
           }
           else {
             if (typeof attachment.content === 'string') {
@@ -161,6 +158,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           return startsWith(key, prefix);
         });
       });
+
       self.messages.send(options, function (err, data) {
         callback(err || null, data);
       });
