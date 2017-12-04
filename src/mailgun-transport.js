@@ -7,6 +7,7 @@ var series = require('async-series');
 var pickBy = require('lodash.pickby');
 var some = require('lodash.some');
 var startsWith = require('lodash.startswith');
+var request = require('request');
 
 var whitelistExact = [
   'from',
@@ -35,10 +36,6 @@ var whitelistPrefix = [
   'v:'
 ];
 
-var transformList = [
-  'replyTo'
-];
-
 module.exports = function (options) {
   return new MailgunTransport(options);
 };
@@ -56,6 +53,15 @@ function MailgunTransport(options) {
 }
 
 MailgunTransport.prototype.send = function send(mail, callback) {
+  let isURL = (str) => {
+    var regex = /(http|https):\/\/(\w+:{0,1}\w*)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%!\-\/]))?/;
+    if(!regex .test(str)) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+
   var self = this;
   var mailData = mail.data;
   series([
@@ -71,9 +77,9 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         done();
       }
     },
-    function(done){
+     function(done){
       //convert address objects or array of objects to strings if present
-      var targets =['from','to','cc','bcc','replyTo'];
+      var targets =['from','to','cc','bcc'];
       var count =0;
       for (var target of targets){
         var addrsData = mailData[target];
@@ -100,36 +106,40 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           mailData[target] = addrs.join();
         }
         count++;
-        count == 5 ? done():null;
+        count == 4 ? done():null;
       }
     },
-    function (done) {
+    async function (done) {
       // convert nodemailer attachments to mailgun-js attachements
       if (mailData.attachments) {
         var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
         for (var i in mailData.attachments) {
           attachment = mailData.attachments[i];
-
           // mailgunjs does not encode content string to a buffer
-          if (typeof attachment.content === 'string') {
-            data = new Buffer(attachment.content, attachment.encoding);
-          } else {
-            data = attachment.content || attachment.path || undefined;
+          let remoteFile = attachment.path || attachment.href || attachment.full_path || undefined
+          if (remoteFile  && isURL(remoteFile)) {
+            mailgunAttachment = await request(remoteFile);
           }
-          //console.log(data);
-          mailgunAttachment = new self.mailgun.Attachment({
-            data: data,
-            filename: attachment.cid || attachment.filename || undefined,
-            contentType: attachment.contentType || undefined,
-            knownLength: attachment.knownLength || undefined
-          });
+          else {
+            if (typeof attachment.content === 'string') {
+              data = new Buffer(attachment.content, attachment.encoding);
+            } else {
+              data = attachment.content || attachment.path || undefined;
+            }
+
+            mailgunAttachment = new self.mailgun.Attachment({
+              data: data,
+              filename: attachment.cid || attachment.filename || undefined,
+              contentType: attachment.contentType || undefined,
+              knownLength: attachment.knownLength || undefined
+            });
+          }
 
           if (attachment.cid) {
             inlineList.push(mailgunAttachment);
           } else {
             attachmentList.push(mailgunAttachment);
           }
-          //console.log(b);
         }
 
         mailData.attachment = attachmentList;
@@ -137,17 +147,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         delete mailData.attachments;
       }
 
-      delete mailData.headers;
-
-      transformList.forEach( function(key) {
-        if (mailData[key]) {
-          switch (key) {
-            case 'replyTo': 
-              mailData['h:Reply-To'] = mailData[key];
-              delete mailData[key];
-          }
-        }
-      });
+      delete mail.data.headers;
 
       var options = pickBy(mailData, function (value, key) {
         if (whitelistExact.indexOf(key) !== -1) {
@@ -160,9 +160,6 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       });
 
       self.messages.send(options, function (err, data) {
-        if (data) {
-          data.messageId = data.id;
-        }
         callback(err || null, data);
       });
     }
