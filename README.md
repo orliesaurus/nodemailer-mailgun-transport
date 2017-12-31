@@ -30,7 +30,8 @@ var auth = {
   auth: {
     api_key: 'key-1234123412341234',
     domain: 'one of your domain names listed at your https://mailgun.com/app/domains'
-  }
+  },
+  proxy: 'http://user:pass@localhost:8080' // optional proxy, default is false
 }
 
 var nodemailerMailgun = nodemailer.createTransport(mg(auth));
