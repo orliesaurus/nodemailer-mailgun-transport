@@ -28,7 +28,8 @@ var whitelistExact = [
   'o:tracking-clicks',
   'o:tracking-opens',
   'o:require-tls',
-  'o:skip-verification'
+  'o:skip-verification',
+  'X-Mailgun-Variables'
 ];
 var whitelistPrefix = [
   'h:',
