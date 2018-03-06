@@ -52,7 +52,10 @@ function MailgunTransport(options) {
   this.mailgun = Mailgun({
     apiKey: this.options.auth.api_key,
     domain: this.options.auth.domain || '',
-    proxy: this.options.proxy || false
+    proxy: this.options.proxy || false,
+    host: this.options.host || 'api.mailgun.net',
+    protocol: this.options.protocol || 'https:',
+    port: this.options.port || 443
   });
   this.messages = this.mailgun.messages();
 }
