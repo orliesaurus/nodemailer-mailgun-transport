@@ -1,5 +1,6 @@
-nodemailer-mailgun-transport [![Known Vulnerabilities](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport/badge.svg)](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport)
+nodemailer-mailgun-transport
 ============================
+[![Known Vulnerabilities](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport/badge.svg)](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport)
 
 ## What is this?
 nodemailer is an amazing node module to send emails within any of your nodejs apps.
