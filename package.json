@@ -2,7 +2,7 @@
   "name": "nodemailer-mailgun-transport",
   "main": "src/mailgun-transport.js",
   "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
-  "version": "1.3.6",
+  "version": "1.4.0",
   "repository": {
     "type": "git",
     "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
@@ -38,7 +38,7 @@
     "lodash.startswith": "^4.0.1",
     "async-series": "0.0.1",
     "consolidate": "^0.14.0",
-    "mailgun-js": "^0.13.1"
+    "mailgun-js": "^0.18.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
