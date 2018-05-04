@@ -1,4 +1,4 @@
-nodemailer-mailgun-transport
+nodemailer-mailgun-transport [![Known Vulnerabilities](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport/badge.svg)](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport)
 ============================
 
 ## What is this?
