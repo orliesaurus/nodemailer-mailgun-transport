@@ -150,7 +150,7 @@ You can use any of the templating engines supported by [Consolidate.js](https://
 
 ## Mailgun Regions
 
-You can use two diffrent region environments for your mailgun domains. For USA region you should use api endpoint ```api.mailgun.net```, but for EU region ```api.eu.mailgun.net```
+You can use two different region environments for your mailgun domains. For USA region you should use api endpoint ```api.mailgun.net```, but for EU region ```api.eu.mailgun.net```
 
 You can pass it as "host" to transport options object:
 
