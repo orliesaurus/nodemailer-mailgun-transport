@@ -23,11 +23,11 @@ Create a new file, install the dependencies **[1]** and look at the skeleton cod
 
 
 ```javascript
-var nodemailer = require('nodemailer');
-var mg = require('nodemailer-mailgun-transport');
+const nodemailer = require('nodemailer');
+const mg = require('nodemailer-mailgun-transport');
 
 // This is your API key that you retrieve from www.mailgun.com/cp (free up to 10K monthly emails)
-var auth = {
+const auth = {
   auth: {
     api_key: 'key-1234123412341234',
     domain: 'one of your domain names listed at your https://mailgun.com/app/domains'
@@ -35,7 +35,7 @@ var auth = {
   proxy: 'http://user:pass@localhost:8080' // optional proxy, default is false
 }
 
-var nodemailerMailgun = nodemailer.createTransport(mg(auth));
+const nodemailerMailgun = nodemailer.createTransport(mg(auth));
 
 nodemailerMailgun.sendMail({
   from: 'myemail@example.com',
@@ -48,12 +48,12 @@ nodemailerMailgun.sendMail({
   html: '<b>Wow Big powerful letters</b>',
   //You can use "text:" to send plain-text content. It's oldschool!
   text: 'Mailgun rocks, pow pow!'
-}, function (err, info) {
+}, (err, info) => {
   if (err) {
-    console.log('Error: ' + err);
+    console.log(`Error: ${err}`);
   }
   else {
-    console.log('Response: ' + info);
+    console.log(`Response: ${info}`);
   }
 });
 ```
@@ -62,7 +62,7 @@ nodemailerMailgun.sendMail({
 Example:
 
 ```
-var mailOptions = {
+const mailOptions = {
     ...
     attachments: [
         {
@@ -74,7 +74,7 @@ var mailOptions = {
 with encoded string as attachment content:
 
 ```
-var mailOptions = {
+const mailOptions = {
     ...
     attachments: [
         {
@@ -88,7 +88,7 @@ with encoded string as an inline attachment:
 
 ```
 // Replace `filename` with `cid`
-var mailOptions = {
+const mailOptions = {
     ...
     attachments: [
         {
@@ -120,9 +120,9 @@ is converted to:
 If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
 
 ```javascript
-var handlebars = require('handlebars');
+const handlebars = require('handlebars');
 
-var contextObject = {
+const contextObject = {
   variable1: 'value1',
   variable2: 'value2'
 };
@@ -136,17 +136,39 @@ nodemailerMailgun.sendMail({
     engine: 'handlebars',
     context: contextObject
   }
-}, function (err, info) {
+}, (err, info) => {
   if (err) {
-    console.log('Error: ' + err);
+    console.log(`Error: ${err}`);
   }
   else {
-    console.log('Response: ' + info);
+    console.log(`Response: ${info}`);
   }
 });
 ```
 
 You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass a string of the engine name to the `template` object. Please see the Consolidate.js documentation for supported engines.
+
+## Mailgun Regions
+
+You can use two different region environments for your mailgun domains. For USA region you should use api endpoint ```api.mailgun.net```, but for EU region ```api.eu.mailgun.net```
+
+You can pass it as "host" to transport options object:
+
+```javascript
+const nodemailer = require('nodemailer');
+const mg = require('nodemailer-mailgun-transport');
+
+const options = {
+  auth: {
+    api_key: 'key-1234123412341234',
+    domain: 'one of your domain names listed at your https://mailgun.com/app/domains'
+  },
+  host: 'api.eu.mailgun.net' // e.g. for EU region
+}
+
+const nodemailerMailgun = nodemailer.createTransport(mg(auth));
+```
+
 
 **[1]** Quickly install dependencies
 ```bash
