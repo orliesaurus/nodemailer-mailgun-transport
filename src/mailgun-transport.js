@@ -169,8 +169,8 @@ MailgunTransport.prototype.send = function send(mail, callback) {
   }
   convertAddressesToStrings();
   transformMailData();
+  resolveAttachments();
   resolveTemplate()
-    .then(resolveAttachments)
     .then(sendMail)
     .then((data) => {
       callback(null, data);
