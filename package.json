@@ -38,6 +38,7 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "handlebars": "^4.0.12",
     "mocha": "^2.4.5",
     "mocha-sinon": "^1.1.5",
     "sinon": "^1.17.4",
