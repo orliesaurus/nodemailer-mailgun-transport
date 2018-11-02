@@ -76,8 +76,8 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       } else {
         resolve();
       }
-    })
-  }
+    });
+  };
   const convertAddressesToStrings = () => {
     // convert address objects or array of objects to strings if present
     const targets = ['from','to','cc','bcc','replyTo'];
@@ -86,11 +86,11 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       if (addrsData !== null && (typeof addrsData === 'object' || Array.isArray(addrsData))) {
         const addrs= [];
         const addresses = typeof addrsData === 'object' ? [addrsData] : addrsData;
-        for (const addr of addresses ) {
+        for (const addr of addresses) {
           if (Array.isArray(addr)) {
             for (const add of addr) {
               if (typeof add === 'object' && add.address) {
-                const final = add.name ? add.name + ' <' + add.address + '>' : add.address
+                const final = add.name ? add.name + ' <' + add.address + '>' : add.address;
                 addrs.push(final);
               } else if (typeof add === 'string') {
                 addrs.push(add);
@@ -106,7 +106,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
         mailData[target] = addrs.join();
       }
     }
-  }
+  };
   const resolveAttachments = () => {
     // convert nodemailer attachments to mailgun-js attachments
     if (mailData.attachments) {
@@ -136,17 +136,17 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       mailData.inline = inlineList;
       delete mailData.attachments;
     }
-  }
+  };
   const transformMailData = () => {
     delete mailData.headers;
 
     for (const transform of transformList) {
       if (mailData[transform.nodemailerKey]) {
-        mailData[transform.mailgunKey] = mailData[transform.nodemailerKey]
-        delete mailData[transform.nodemailerKey]
+        mailData[transform.mailgunKey] = mailData[transform.nodemailerKey];
+        delete mailData[transform.nodemailerKey];
       }
     }
-  }
+  };
   const sendMail = () => {
     return new Promise((resolve, reject) => {
       const options = Object.keys(mailData)
@@ -161,12 +161,12 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           data.messageId = data.id;
         }
         if (err) {
-          reject(err)
+          reject(err);
         }
-        resolve(data)
+        resolve(data);
       });
-    })
-  }
+    });
+  };
   convertAddressesToStrings();
   transformMailData();
   resolveAttachments();
@@ -176,5 +176,5 @@ MailgunTransport.prototype.send = function send(mail, callback) {
       callback(null, data);
     }).catch((err) => {
       callback(err);
-    })
+    });
 };
