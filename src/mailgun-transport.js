@@ -60,6 +60,7 @@ function MailgunTransport(options) {
 }
 
 MailgunTransport.prototype.send = function (mail, callback) {
+  const self = this
   const mailData = mail.data;
   const resolveTemplate = () => {
     return new Promise((resolve, reject) => {
@@ -117,7 +118,7 @@ MailgunTransport.prototype.send = function (mail, callback) {
         } else {
           data = attachment.content || attachment.path || undefined;
         }
-        mailgunAttachment = new this.mailgun.Attachment({
+        mailgunAttachment = new self.mailgun.Attachment({
           data: data,
           filename: attachment.cid || attachment.filename || undefined,
           contentType: attachment.contentType || undefined,
@@ -155,7 +156,7 @@ MailgunTransport.prototype.send = function (mail, callback) {
           return obj;
         }, {});
 
-      this.messages.send(options, (err, data) => {
+      self.messages.send(options, (err, data) => {
         if (data) {
           data.messageId = data.id;
         }
