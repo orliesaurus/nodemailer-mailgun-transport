@@ -33,15 +33,12 @@
   ],
   "homepage": "http://mailgun.com",
   "dependencies": {
-    "lodash.pickby": "^4.3.0",
-    "lodash.some": "^4.3.0",
-    "lodash.startswith": "^4.0.1",
-    "async-series": "0.0.1",
     "consolidate": "^0.14.0",
     "mailgun-js": "^0.18.0"
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "handlebars": "^4.0.12",
     "mocha": "^2.4.5",
     "mocha-sinon": "^1.1.5",
     "sinon": "^1.17.4",

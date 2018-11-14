@@ -1,14 +1,10 @@
 'use strict';
 
-var Mailgun = require('mailgun-js');
-var cons = require('consolidate');
-var packageData = require('../package.json');
-var series = require('async-series');
-var pickBy = require('lodash.pickby');
-var some = require('lodash.some');
-var startsWith = require('lodash.startswith');
+const Mailgun = require('mailgun-js');
+const cons = require('consolidate');
+const packageData = require('../package.json');
 
-var whitelistExact = [
+const whitelistExact = [
   'from',
   'to',
   'cc',
@@ -31,13 +27,16 @@ var whitelistExact = [
   'o:skip-verification',
   'X-Mailgun-Variables'
 ];
-var whitelistPrefix = [
+const whitelistPrefix = [
   'h:',
   'v:'
 ];
 
-var transformList = [
-  'replyTo'
+const transformList = [
+  {
+    nodemailerKey: 'replyTo',
+    mailgunKey: 'h:Reply-To'
+  }
 ];
 
 module.exports = function (options) {
@@ -60,118 +59,122 @@ function MailgunTransport(options) {
   this.messages = this.mailgun.messages();
 }
 
-MailgunTransport.prototype.send = function send(mail, callback) {
-  var self = this;
-  var mailData = mail.data;
-  series([
-    function (done) {
+MailgunTransport.prototype.send = function (mail, callback) {
+  const self = this
+  const mailData = mail.data;
+  const resolveTemplate = () => {
+    return new Promise((resolve, reject) => {
       if (mailData.template && mailData.template.name && mailData.template.engine) {
         mailData.template.context = mailData.template.context || {};
-        cons[mailData.template.engine](mailData.template.name, mailData.template.context, function (err, html) {
-          if (err) throw err;
+        cons[mailData.template.engine](mailData.template.name, mailData.template.context, (err, html) => {
+          if (err) {
+            reject(err);
+          }
           mailData.html = html;
-          done();
+          resolve();
         });
       } else {
-        done();
+        resolve();
       }
-    },
-    function(done){
-      //convert address objects or array of objects to strings if present
-      var targets =['from','to','cc','bcc','replyTo'];
-      var count =0;
-      for (var target of targets){
-        var addrsData = mailData[target];
-        if(addrsData !== null && (typeof addrsData === 'object' || Array.isArray(addrsData))){
-          var addrs= [];
-          var addresses = typeof addrsData === 'object' ? [addrsData] : addrsData;
-          for (var addr of addresses ){
-                if (Array.isArray(addr)){
-                  for (var add of addr){
-                    if(typeof add === 'object' && add.address){
-                      var final = add.name ? add.name + ' <' + add.address + '>' : add.address
-                      addrs.push(final);
-                    } else if (typeof add === 'string') {
-                      addrs.push(add)
-                    }
-                  }
-                } else{
-                  if(addr.address){
-                    var final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address
-                    addrs.push(final);
-                  }
-                }
-          }
-          mailData[target] = addrs.join();
-        }
-        count++;
-        count == 5 ? done():null;
-      }
-    },
-    function (done) {
-      // convert nodemailer attachments to mailgun-js attachements
-      if (mailData.attachments) {
-        var attachment, mailgunAttachment, data, attachmentList = [], inlineList = [];
-        for (var i in mailData.attachments) {
-          attachment = mailData.attachments[i];
-
-          // mailgunjs does not encode content string to a buffer
-          if (typeof attachment.content === 'string') {
-            data = new Buffer(attachment.content, attachment.encoding);
+    });
+  };
+  const convertAddressesToStrings = () => {
+    // convert address objects or array of objects to strings if present
+    const targets = ['from','to','cc','bcc','replyTo'];
+    for (const target of targets) {
+      const addrsData = mailData[target];
+      if (addrsData !== null && (typeof addrsData === 'object' || Array.isArray(addrsData))) {
+        const addrs= [];
+        const addresses = typeof addrsData === 'object' ? [addrsData] : addrsData;
+        for (const addr of addresses) {
+          if (Array.isArray(addr)) {
+            for (const add of addr) {
+              if (typeof add === 'object' && add.address) {
+                const final = add.name ? add.name + ' <' + add.address + '>' : add.address;
+                addrs.push(final);
+              } else if (typeof add === 'string') {
+                addrs.push(add);
+              }
+            }
           } else {
-            data = attachment.content || attachment.path || undefined;
+            if (addr.address) {
+              const final = addr.name ? addr.name + ' <' + addr.address + '>' : addr.address;
+              addrs.push(final);
+            }
           }
-          //console.log(data);
-          mailgunAttachment = new self.mailgun.Attachment({
-            data: data,
-            filename: attachment.cid || attachment.filename || undefined,
-            contentType: attachment.contentType || undefined,
-            knownLength: attachment.knownLength || undefined
-          });
-
-          if (attachment.cid) {
-            inlineList.push(mailgunAttachment);
-          } else {
-            attachmentList.push(mailgunAttachment);
-          }
-          //console.log(b);
         }
-
-        mailData.attachment = attachmentList;
-        mailData.inline = inlineList;
-        delete mailData.attachments;
+        mailData[target] = addrs.join();
       }
-
-      delete mailData.headers;
-
-      transformList.forEach( function(key) {
-        if (mailData[key]) {
-          switch (key) {
-            case 'replyTo': 
-              mailData['h:Reply-To'] = mailData[key];
-              delete mailData[key];
-          }
+    }
+  };
+  const resolveAttachments = () => {
+    // convert nodemailer attachments to mailgun-js attachments
+    if (mailData.attachments) {
+      let mailgunAttachment, data, attachmentList = [], inlineList = [];
+      for (const attachment of mailData.attachments) {
+        // mailgunjs does not encode content string to a buffer
+        if (typeof attachment.content === 'string') {
+          data = Buffer.from(attachment.content, attachment.encoding);
+        } else {
+          data = attachment.content || attachment.path || undefined;
         }
-      });
-
-      var options = pickBy(mailData, function (value, key) {
-        if (whitelistExact.indexOf(key) !== -1) {
-          return true;
-        }
-
-        return some(whitelistPrefix, function (prefix) {
-          return startsWith(key, prefix);
+        mailgunAttachment = new self.mailgun.Attachment({
+          data: data,
+          filename: attachment.cid || attachment.filename || undefined,
+          contentType: attachment.contentType || undefined,
+          knownLength: attachment.knownLength || undefined
         });
-      });
 
-      self.messages.send(options, function (err, data) {
+        if (attachment.cid) {
+          inlineList.push(mailgunAttachment);
+        } else {
+          attachmentList.push(mailgunAttachment);
+        }
+      }
+
+      mailData.attachment = attachmentList;
+      mailData.inline = inlineList;
+      delete mailData.attachments;
+    }
+  };
+  const transformMailData = () => {
+    delete mailData.headers;
+
+    for (const transform of transformList) {
+      if (mailData[transform.nodemailerKey]) {
+        mailData[transform.mailgunKey] = mailData[transform.nodemailerKey];
+        delete mailData[transform.nodemailerKey];
+      }
+    }
+  };
+  const sendMail = () => {
+    return new Promise((resolve, reject) => {
+      const options = Object.keys(mailData)
+        .filter(key => whitelistExact.find(whitelistExactKey => whitelistExactKey === key) || whitelistPrefix.find(whitelistPrefixKey => key.startsWith(whitelistPrefixKey)))
+        .reduce((obj, key) => {
+          obj[key] = mailData[key];
+          return obj;
+        }, {});
+
+      self.messages.send(options, (err, data) => {
         if (data) {
           data.messageId = data.id;
         }
-        callback(err || null, data);
+        if (err) {
+          reject(err);
+        }
+        resolve(data);
       });
-    }
-  ], function (err) {
-    if (err) throw err;
-  });
+    });
+  };
+  convertAddressesToStrings();
+  transformMailData();
+  resolveAttachments();
+  resolveTemplate()
+    .then(sendMail)
+    .then((data) => {
+      callback(null, data);
+    }).catch((err) => {
+      callback(err);
+    });
 };
