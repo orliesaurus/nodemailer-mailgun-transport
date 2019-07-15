@@ -11,6 +11,7 @@ const whitelistExact = [
   'bcc',
   'subject',
   'text',
+  'template',
   'html',
   'attachment',
   'inline',
@@ -64,9 +65,16 @@ MailgunTransport.prototype.send = function (mail, callback) {
   const mailData = mail.data;
   const resolveTemplate = () => {
     return new Promise((resolve, reject) => {
-      if (mailData.template && mailData.template.name && mailData.template.engine) {
-        mailData.template.context = mailData.template.context || {};
-        cons[mailData.template.engine](mailData.template.name, mailData.template.context, (err, html) => {
+      if (mailData.template && (typeof mailData.template === 'object')) {
+        console.warn('nodemailer-mailgun-transport has deprecated using the "template" key for consolidate templates in favor of "consolidateTemplate"');
+        console.warn('this is to better separate mailgun\'s own template functionality from consolidate.js templating before sending');
+        console.warn('future versions will remove this backward compatibility and require using "consolidateTemplate" insetad');
+        mailData.consolidateTemplate = mailData.template;
+        delete mailData.template;
+      }
+      if (mailData.consolidateTemplate && mailData.consolidateTemplate.name && mailData.consolidateTemplate.engine) {
+        mailData.consolidateTemplate.context = mailData.consolidateTemplate.context || {};
+        cons[mailData.consolidateTemplate.engine](mailData.consolidateTemplate.name, mailData.consolidateTemplate.context, (err, html) => {
           if (err) {
             reject(err);
           }

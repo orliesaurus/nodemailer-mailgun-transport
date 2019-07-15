@@ -161,7 +161,40 @@ describe('when sending a mail', function () {
     });
   });
 
-  describe('when referencing a template file', function() {
+  describe('when referencing a consolidate template file using currently supported key', function() {
+    it('should insert variables and send the data as HTML', function(done) {
+      var self = this;
+
+      var data = {
+        from: 'from@bar.com',
+        to: 'to@bar.com',
+        subject: 'Subject',
+        consolidateTemplate: {
+          name: 'test/test_template.hbs',
+          engine: 'handlebars',
+          context: {
+            variable1: 'Passed!'
+          }
+        },
+        foo: 'bar'
+      };
+      this.transport.send({
+        data: data
+      }, function (err, info) {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          subject: 'Subject',
+          html: '<body><h1>Passed!</h1></body>\n'
+        });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
+        done();
+      });
+    });
+  });
+
+  describe('when referencing a consolidate template file using deprecated template key', function() {
     it('should insert variables and send the data as HTML', function(done) {
       var self = this;
 
@@ -186,6 +219,35 @@ describe('when sending a mail', function () {
           to: 'to@bar.com',
           subject: 'Subject',
           html: '<body><h1>Passed!</h1></body>\n'
+        });
+        expect(err).to.be.null;
+        expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
+        done();
+      });
+    });
+  });
+
+  describe('when referencing a mailgun template', function() {
+    it('should pass the template variables and template to mailgun for mailgun to process', function(done) {
+      var self = this;
+
+      var data = {
+        from: 'from@bar.com',
+        to: 'to@bar.com',
+        subject: 'Subject',
+        template: 'boss_door',
+        'h:X-Mailgun-Variables': JSON.stringify({key:'boss'}),
+        foo: 'bar'
+      };
+      this.transport.send({
+        data: data
+      }, function (err, info) {
+        expect(self.transport.messages.send).to.have.been.calledWith({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          subject: 'Subject',
+          template: 'boss_door',
+          'h:X-Mailgun-Variables': JSON.stringify({key:'boss'}),
         });
         expect(err).to.be.null;
         expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');

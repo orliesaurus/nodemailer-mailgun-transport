@@ -115,9 +115,30 @@ is converted to:
   from: 'Sales <sales@example.com>',
   to: 'Mary <mary@differentexample.com>,john@anotherexample.com'
 ```
-## Now with Consolidate.js templates
+## Now with Consolidate.js templates, and also compatible with mailgun's own templates
 
-If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
+This package has two options for templating - one is to allow mailgun's templating engine to process the template, and the other is to use templates in your own codebase using any templating engine supported by consolidate.js.
+
+To use mailgun's templating engine (and allow templates to iterate independent of your codebase), simply pass the template name to the "template" key, and the template variables as a stringified JSON to the "h:X-Mailgun-Variables" key.  Here's an example:
+
+```javascript
+nodemailerMailgun.sendMail({
+  from: 'myemail@example.com',
+  to: 'recipient@domain.com', // An array if you have multiple recipients.
+  subject: 'Hey you, awesome!',
+  template: 'boss_door',
+  'h:X-Mailgun-Variables': JSON.stringify({key:'boss'})
+}, (err, info) => {
+  if (err) {
+    console.log(`Error: ${err}`);
+  }
+  else {
+    console.log(`Response: ${info}`);
+  }
+});
+```
+
+To use consolidate.js templates, use the "consolidateTemplate" key and pass an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
 
 ```javascript
 const handlebars = require('handlebars');
@@ -131,7 +152,7 @@ nodemailerMailgun.sendMail({
   from: 'myemail@example.com',
   to: 'recipient@domain.com', // An array if you have multiple recipients.
   subject: 'Hey you, awesome!',
-  template: {
+  consolidateTemplate: {
     name: 'email.hbs',
     engine: 'handlebars',
     context: contextObject
@@ -146,7 +167,9 @@ nodemailerMailgun.sendMail({
 });
 ```
 
-You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass a string of the engine name to the `template` object. Please see the Consolidate.js documentation for supported engines.
+You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass a string of the engine name to the `consolidateTemplate` object. Please see the Consolidate.js documentation for supported engines.
+
+DEPRECATION NOTICE: In previous releases, the consolidate.js templating used the "template" key instead of the "consolidateTemplate" key.  Although this will currently work for backward compatibility, this usage is now deprecated and will be removed in future releases.  Please update your code before it breaks in future releases.
 
 ## Mailgun Regions
 
