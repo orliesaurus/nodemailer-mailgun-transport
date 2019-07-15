@@ -162,7 +162,7 @@ describe('when sending a mail', function () {
   });
 
   describe('when referencing a template file', function() {
-    it('should insert variables and send the data as HTML', function() {
+    it('should insert variables and send the data as HTML', function(done) {
       var self = this;
 
       var data = {
@@ -185,7 +185,7 @@ describe('when sending a mail', function () {
           from: 'from@bar.com',
           to: 'to@bar.com',
           subject: 'Subject',
-          html: '<body><h1>Passed!</h1></body>'
+          html: '<body><h1>Passed!</h1></body>\n'
         });
         expect(err).to.be.null;
         expect(info.messageId).to.equal('<20111114174239.25659.5817@samples.mailgun.org>');
