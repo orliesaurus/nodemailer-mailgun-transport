@@ -22,7 +22,7 @@ I know this is a tiny module but many people use it in production (high5 to all 
 Create a new file, install the dependencies **[1]** and look at the skeleton code below to get you started quickly!
 
 
-```javascript
+```js
 const nodemailer = require('nodemailer');
 const mg = require('nodemailer-mailgun-transport');
 
@@ -61,7 +61,7 @@ nodemailerMailgun.sendMail({
 
 Example:
 
-```
+```js
 const mailOptions = {
     ...
     attachments: [
@@ -73,7 +73,7 @@ const mailOptions = {
 
 with encoded string as attachment content:
 
-```
+```js
 const mailOptions = {
     ...
     attachments: [
@@ -86,7 +86,7 @@ const mailOptions = {
 
 with encoded string as an inline attachment:
 
-```
+```js
 // Replace `filename` with `cid`
 const mailOptions = {
     ...
@@ -97,7 +97,7 @@ const mailOptions = {
             encoding: 'base64'
         },
 ```
-```
+```html
 <!-- Reference the `cid` in your email template file -->
 <img src="cid:logo.png" alt="logo" />
 ```
@@ -105,13 +105,13 @@ const mailOptions = {
 The "from", "to", "cc", and "bcc" fields support an address object or array of address objects. Each "name" and "address" are converted to  ```"name <address>"``` format.  "name" is optional, "address" is required. Missing or null address in object is skipped.
 
 Examples:
-```
+```js
  from: {name: 'Sales', address: 'sales@example.com'},
  to: [{name:'Mary', address:'mary@differentexample.com'}, {address:'john@anotherexample.com'}]
 
 ```
 is converted to:
-```
+```js
   from: 'Sales <sales@example.com>',
   to: 'Mary <mary@differentexample.com>,john@anotherexample.com'
 ```
@@ -119,7 +119,7 @@ is converted to:
 
 If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
 
-```javascript
+```js
 const handlebars = require('handlebars');
 
 const contextObject = {
@@ -154,7 +154,7 @@ You can use two different region environments for your mailgun domains. For USA 
 
 You can pass it as "host" to transport options object:
 
-```javascript
+```js
 const nodemailer = require('nodemailer');
 const mg = require('nodemailer-mailgun-transport');
 
@@ -175,3 +175,14 @@ const nodemailerMailgun = nodemailer.createTransport(mg(auth));
 npm install nodemailer
 npm install nodemailer-mailgun-transport
 ```
+
+## Legacy Node.js versions
+
+Versions of Node.js before 7.6 are supported via `nodemailer-mailgun-transport/es5`.
+
+```js
+const nodemailer = require('nodemailer');
+const mg = require('nodemailer-mailgun-transport/es5');
+
+```
+

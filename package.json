@@ -1,14 +1,15 @@
 {
   "name": "nodemailer-mailgun-transport",
-  "main": "src/mailgun-transport.js",
+  "main": "src/index.js",
   "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
-  "version": "1.4.0",
+  "version": "2.0.0",
   "repository": {
     "type": "git",
     "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "standard src && faucet",
+    "prepublish": "tsc --allowJs --outFile es5/index.js src/index.js"
   },
   "keywords": [
     "email",
@@ -33,15 +34,20 @@
   ],
   "homepage": "http://mailgun.com",
   "dependencies": {
-    "consolidate": "^0.14.0",
-    "mailgun-js": "^0.18.0"
+    "consolidate": "^0.15.1",
+    "mailgun-js": "^0.22.0"
   },
   "devDependencies": {
-    "chai": "^3.5.0",
-    "handlebars": "^4.0.12",
-    "mocha": "^2.4.5",
-    "mocha-sinon": "^1.1.5",
-    "sinon": "^1.17.4",
-    "sinon-chai": "^2.8.0"
-  }
+    "faucet": "0.0.1",
+    "handlebars": "^4.1.2",
+    "prettier": "^1.18.2",
+    "standard": "^14.1.0",
+    "tape": "^4.11.0",
+    "tape-catch": "^1.0.6",
+    "typescript": "^3.6.2"
+  },
+  "files": [
+    "src",
+    "es5"
+  ]
 }
