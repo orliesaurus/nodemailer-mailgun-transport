@@ -5,6 +5,7 @@ const packageData = require("../package.json");
 
 const whitelist = [
   ["replyTo", "h:Reply-To"],
+  ["messageId", "h:Message-Id"],
   [/^h:/],
   [/^v:/],
   ["from"],
