@@ -352,3 +352,35 @@ test("should transform fields like h;Reply-To", assert => {
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
+
+test("should allow custom message-id", assert => {
+  assert.plan(3);
+  const data = {
+    from: "from@bar.com",
+    to: "to@bar.com",
+    subject: "Subject",
+    text: "Hello",
+    messageId: "<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>",
+  };
+  const mailgunStub = async result => {
+    assert.deepEqual(result, {
+      from: "from@bar.com",
+      to: "to@bar.com",
+      subject: "Subject",
+      text: "Hello",
+      "h:Message-Id": "<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>",
+    });
+    return {
+      id: "<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>",
+      message: "Queued. Thank you."
+    };
+  };
+  const callback = (error, result) => {
+    assert.error(error);
+    assert.equal(
+      result.messageId,
+      "<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>"
+    );
+  };
+  MailgunTransport._send(mailgunStub)({ data }, callback);
+});
