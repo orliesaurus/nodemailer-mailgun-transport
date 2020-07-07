@@ -26,3 +26,5 @@ node_modules
 
 #IDE local configuration
 .vscode
+
+*-lock.json
