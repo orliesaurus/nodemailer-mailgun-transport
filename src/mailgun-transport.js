@@ -12,6 +12,7 @@ var request = require('request');
 var whitelistExact = [
   'from',
   'to',
+  'h:Reply-To',
   'cc',
   'bcc',
   'subject',
@@ -79,9 +80,15 @@ MailgunTransport.prototype.send = function send(mail, callback) {
     },
      function(done){
       //convert address objects or array of objects to strings if present
-      var targets =['from','to','cc','bcc'];
+      var targets =['from','to','cc','bcc','replyTo'];
       var count =0;
       for (var target of targets){
+        if(target === 'replyTo'){
+          const newTarget = 'h:Reply-To'
+          mailData[newTarget] =mailData[target];
+          delete mailData[target]
+          target = newTarget
+        } 
         var addrsData = mailData[target];
         if(addrsData !== null && (typeof addrsData === 'object' || Array.isArray(addrsData))){
           var addrs= [];
@@ -106,7 +113,7 @@ MailgunTransport.prototype.send = function send(mail, callback) {
           mailData[target] = addrs.join();
         }
         count++;
-        count == 4 ? done():null;
+        count == 5 ? done():null;
       }
     },
     async function (done) {
