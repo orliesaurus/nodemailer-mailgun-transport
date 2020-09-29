@@ -132,7 +132,7 @@ const send = mailgunSend => async ({ data: mail }, callback) => {
 
 const transport = (options = {}) => {
   const messages = mailgun({
-    apiKey: options.auth.api_key,
+    apiKey: options.auth.api_key || options.auth.apiKey,
     domain: options.auth.domain || "",
     proxy: options.proxy || false,
     host: options.host || "api.mailgun.net",
