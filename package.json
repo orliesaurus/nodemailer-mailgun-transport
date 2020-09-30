@@ -39,7 +39,7 @@
   },
   "devDependencies": {
     "faucet": "0.0.1",
-    "handlebars": "^4.1.2",
+    "handlebars": "^4.7.6",
     "prettier": "^1.18.2",
     "standard": "^14.1.0",
     "tape": "^4.11.0",
