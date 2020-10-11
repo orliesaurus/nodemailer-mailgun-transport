@@ -236,6 +236,39 @@ test("should render a template with variables and send the data as HTML", assert
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
+test("should pass the template variables and template to mailgun for mailgun to process", assert => {
+  assert.plan(3);
+  const data = {
+    from: "from@bar.com",
+    to: "to@bar.com",
+    subject: "Subject",
+    template: "boss_door",
+    'h:X-Mailgun-Variables': JSON.stringify({key:'boss'}),
+    foo: "bar"
+  };
+  const mailgunStub = async result => {
+    assert.deepEqual(result, {
+      from: "from@bar.com",
+      to: "to@bar.com",
+      subject: "Subject",
+      template: "boss_door",
+      'h:X-Mailgun-Variables': JSON.stringify({key:'boss'}),
+    });
+    return {
+      id: "<20111114174239.25659.5817@samples.mailgun.org>",
+      message: "Queued. Thank you."
+    };
+  };
+  const callback = (error, result) => {
+    assert.error(error);
+    assert.equal(
+      result.messageId,
+      "<20111114174239.25659.5817@samples.mailgun.org>"
+    );
+  };
+  MailgunTransport._send(mailgunStub)({ data }, callback);
+});
+
 test("should convert to standard address format", assert => {
   assert.plan(3);
   const data = {
