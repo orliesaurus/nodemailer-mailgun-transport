@@ -115,9 +115,30 @@ is converted to:
   from: 'Sales <sales@example.com>',
   to: 'Mary <mary@differentexample.com>,john@anotherexample.com'
 ```
-## Now with Consolidate.js templates
+## Now with Consolidate.js templates, and also compatible with mailgun's own templates
 
-If you pass a "template" key an object that contains a "name" key, an "engine" key and, optionally, a "context" object, you can use Handlebars templates to generate the HTML for your message. Like so:
+This package has two options for templating - one is to allow mailgun's templating engine to process the template, and the other is to use templates in your own codebase using any templating engine supported by consolidate.js.
+
+To use mailgun's templating engine (and allow templates to iterate independent of your codebase), simply pass the template name to the `template` key, and the template variables as a stringified JSON to the `h:X-Mailgun-Variables` key. Here's an example:
+￼
+```javascript
+nodemailerMailgun.sendMail({
+  from: 'myemail@example.com',
+  to: 'recipient@domain.com', // An array if you have multiple recipients.
+  subject: 'Hey you, awesome!',
+  template: 'boss_door',
+  'h:X-Mailgun-Variables': JSON.stringify({key:'boss'})
+}, (err, info) => {
+  if (err) {
+    console.log(`Error: ${err}`);
+  }
+  else {
+    console.log(`Response: ${info}`);
+  }
+});
+```
+
+To use consolidate.js templates locally, give the `template` key an object instead that contains a `name` key, an `engine` key and, optionally, a `context` object. For example, you can use Handlebars templates to generate the HTML for your message like so:
 
 ```js
 const handlebars = require('handlebars');

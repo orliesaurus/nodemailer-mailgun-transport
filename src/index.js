@@ -50,7 +50,9 @@ const applyKeyWhitelist = mail =>
   }, {});
 
 const renderTemplate = async template => {
-  if (!template || !template.name || !template.engine) {
+  if (!template || typeof template === "string" || !template.name || !template.engine) {
+    // either there's no template or the caller is requesting a mailgun template
+    // so let everything through unaltered
     return {};
   }
   const { engine, name, context = {} } = template;
