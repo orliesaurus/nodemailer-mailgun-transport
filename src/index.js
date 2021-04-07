@@ -1,5 +1,5 @@
-const mailgun = require("mailgun-js");
-const Attachment = require("mailgun-js/lib/attachment");
+const Mailgun = require("mailgun.js");
+const formData = require("form-data");
 const consolidate = require("consolidate");
 const packageData = require("../package.json");
 
@@ -67,13 +67,12 @@ const makeMailgunAttachments = (attachments = []) => {
         typeof item.content === "string"
           ? Buffer.from(item.content, item.encoding)
           : item.content || item.path || undefined;
-      // mailgunjs does not encode content string to a buffer
-      const attachment = new Attachment({
+      const attachment = {
         data,
         filename: item.cid || item.filename || undefined,
         contentType: item.contentType || undefined,
         knownLength: item.knownLength || undefined
-      });
+      };
       const [attachmentAttachments, inlineAttachments] = results;
       return [
         attachmentAttachments.concat(!item.cid ? attachment : []),
@@ -133,15 +132,21 @@ const send = mailgunSend => async ({ data: mail }, callback) => {
 };
 
 const transport = (options = {}) => {
-  const messages = mailgun({
-    apiKey: options.auth.api_key || options.auth.apiKey,
-    domain: options.auth.domain || "",
-    proxy: options.proxy || false,
-    host: options.host || "api.mailgun.net",
-    protocol: options.protocol || "https:",
-    port: options.port || 443
-  }).messages();
-  const mailgunSend = mail => messages.send(mail);
+  const mailgun = new Mailgun(formData);
+  let url = options.url;
+  if (!options.url && options.host) {
+    const generatedUrl = new URL("https://" + (options.host || "api.mailgun.net"));
+    generatedUrl.protocol = options.protocol || "https:";
+    generatedUrl.port = options.port || 443;
+    url = generatedUrl.href;
+  }
+  const messages = mailgun.client({
+    username: 'api',
+    key: options.auth.api_key || options.auth.apiKey,
+    url
+  }).messages;
+
+  const mailgunSend = mail => messages.create(options.auth.domain || "", mail);
   return {
     name: "Mailgun",
     version: packageData.version,

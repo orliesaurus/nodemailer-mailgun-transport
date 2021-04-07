@@ -35,7 +35,8 @@
   "homepage": "http://mailgun.com",
   "dependencies": {
     "consolidate": "^0.15.1",
-    "mailgun-js": "^0.22.0"
+    "form-data": "^4.0.0",
+    "mailgun.js": "^3.3.0"
   },
   "devDependencies": {
     "faucet": "0.0.1",

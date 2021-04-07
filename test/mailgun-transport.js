@@ -417,3 +417,38 @@ test("should allow custom message-id", assert => {
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
+
+test("should allow custom url with host", assert => {
+  assert.plan(1);
+  const transport = MailgunTransport({
+    auth: {
+      apiKey: "api-key"
+    },
+    host: "api.mailgun.com"
+  });
+  assert.equal(transport.messages.request.url, "https://api.mailgun.com/");
+});
+
+test("should allow custom url with all fields", assert => {
+  assert.plan(1);
+  const transport = MailgunTransport({
+    auth: {
+      apiKey: "api-key"
+    },
+    host: "api.mailgun.com",
+    protocol: "http:",
+    port: 8080
+  });
+  assert.equal(transport.messages.request.url, "http://api.mailgun.com:8080/");
+});
+
+test("should allow custom url with url field", assert => {
+  assert.plan(1);
+  const transport = MailgunTransport({
+    auth: {
+      apiKey: "api-key"
+    },
+    url: "http://api.mailgun.com:8080"
+  });
+  assert.equal(transport.messages.request.url, "http://api.mailgun.com:8080");
+});
