@@ -42,7 +42,7 @@ nodemailerMailgun.sendMail({
   cc:'second@domain.com',
   bcc:'secretagent@company.gov',
   subject: 'Hey you, awesome!',
-  'h:Reply-To': 'reply2this@company.com',
+  'replyTo': 'reply2this@company.com',
   //You can use "html:" to send HTML email content. It's magic!
   html: '<b>Wow Big powerful letters</b>',
   //You can use "text:" to send plain-text content. It's oldschool!
