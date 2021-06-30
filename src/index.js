@@ -143,7 +143,8 @@ const transport = (options = {}) => {
   const messages = mailgun.client({
     username: 'api',
     key: options.auth.api_key || options.auth.apiKey,
-    url
+    url,
+    timeout: options.timeout,
   }).messages;
 
   const mailgunSend = mail => messages.create(options.auth.domain || "", mail);
