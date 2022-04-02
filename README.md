@@ -1,30 +1,28 @@
-nodemailer-mailgun-transport
+nodemailer-mailgun
 ============================
-[![Known Vulnerabilities](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport/badge.svg)](https://snyk.io/test/github/orliesaurus/nodemailer-mailgun-transport)
 
 ## What is this?
 nodemailer is an amazing node module to send emails within any of your nodejs apps.
 This is the transport plugin that goes with nodemailer to send email using [Mailgun](https://mailgun.com/)'s awesomeness!
 Pow Pow.
+It's a fork from [nodemailer-mailgun-transport](https://github.com/orliesaurus/nodemailer-mailgun-transport), it has been rewritten in TypeScript and everything about template/consolidate has been removed.
 
 
 ## How does it work?
-Based on [this mailgun-js module](https://github.com/1lobby/mailgun-js) and the [nodemailer module](https://github.com/andris9/Nodemailer), the Mailgun Transport was born. This is a transport layer, meaning it will allow you to send emails using nodemailer, using the Mailgun API instead of the SMTP protocol!
+Based on [this mailgun-js module](https://github.com/mailgun/mailgun.js) and the [nodemailer module](https://github.com/andris9/Nodemailer), the Mailgun Transport was born. This is a transport layer, meaning it will allow you to send emails using nodemailer, using the Mailgun API instead of the SMTP protocol!
 
 Nodemailer allows you to write code once and then swap out the transport so you can use different accounts on different providers. On top of that it's a super solid way of sending emails quickly on your node app(s).
 
 The Mailgun transport for nodemailer is great to use when SMTP is blocked on your server or you just prefer the reliability of the web api!
 
-## Support the project
-I know this is a tiny module but many people use it in production (high5 to all of us) - if you happen to use this module please click the star button - it means a lot to all the contributors ![](https://i.snag.gy/oef5di.jpg)
 ## Quickstart - Example
 
 Create a new file, install the dependencies **[1]** and look at the skeleton code below to get you started quickly!
 
 
 ```js
-const nodemailer = require('nodemailer');
-const mg = require('nodemailer-mailgun-transport');
+import nodemailer from 'nodemailer';
+import mg from 'nodemailer-mailgun';
 
 // This is your API key that you retrieve from www.mailgun.com/cp (free up to 10K monthly emails)
 const auth = {
@@ -114,59 +112,6 @@ is converted to:
   from: 'Sales <sales@example.com>',
   to: 'Mary <mary@differentexample.com>,john@anotherexample.com'
 ```
-## Now with Consolidate.js templates, and also compatible with mailgun's own templates
-
-This package has two options for templating - one is to allow mailgun's templating engine to process the template, and the other is to use templates in your own codebase using any templating engine supported by consolidate.js.
-
-To use mailgun's templating engine (and allow templates to iterate independent of your codebase), simply pass the template name to the `template` key, and the template variables as a stringified JSON to the `h:X-Mailgun-Variables` key. Here's an example:
-￼
-```javascript
-nodemailerMailgun.sendMail({
-  from: 'myemail@example.com',
-  to: 'recipient@domain.com', // An array if you have multiple recipients.
-  subject: 'Hey you, awesome!',
-  template: 'boss_door',
-  'h:X-Mailgun-Variables': JSON.stringify({key:'boss'})
-}, (err, info) => {
-  if (err) {
-    console.log(`Error: ${err}`);
-  }
-  else {
-    console.log(`Response: ${info}`);
-  }
-});
-```
-
-To use consolidate.js templates locally, give the `template` key an object instead that contains a `name` key, an `engine` key and, optionally, a `context` object. For example, you can use Handlebars templates to generate the HTML for your message like so:
-
-```js
-const handlebars = require('handlebars');
-
-const contextObject = {
-  variable1: 'value1',
-  variable2: 'value2'
-};
-
-nodemailerMailgun.sendMail({
-  from: 'myemail@example.com',
-  to: 'recipient@domain.com', // An array if you have multiple recipients.
-  subject: 'Hey you, awesome!',
-  template: {
-    name: 'email.hbs',
-    engine: 'handlebars',
-    context: contextObject
-  }
-}, (err, info) => {
-  if (err) {
-    console.log(`Error: ${err}`);
-  }
-  else {
-    console.log(`Response: ${info}`);
-  }
-});
-```
-
-You can use any of the templating engines supported by [Consolidate.js](https://github.com/tj/consolidate.js/). Just require the engine module in your script, and pass a string of the engine name to the `template` object. Please see the Consolidate.js documentation for supported engines.
 
 ## Mailgun Regions
 
@@ -175,8 +120,8 @@ You can use two different region environments for your mailgun domains. For USA 
 You can pass it as "host" to transport options object:
 
 ```js
-const nodemailer = require('nodemailer');
-const mg = require('nodemailer-mailgun-transport');
+import nodemailer from 'nodemailer';
+import mg from 'nodemailer-mailgun';
 
 const options = {
   auth: {
@@ -193,16 +138,6 @@ const nodemailerMailgun = nodemailer.createTransport(mg(auth));
 **[1]** Quickly install dependencies
 ```bash
 npm install nodemailer
-npm install nodemailer-mailgun-transport
-```
-
-## Legacy Node.js versions
-
-Versions of Node.js before 7.6 are supported via `nodemailer-mailgun-transport/es5`.
-
-```js
-const nodemailer = require('nodemailer');
-const mg = require('nodemailer-mailgun-transport/es5');
-
+npm install nodemailer-mailgun
 ```
 

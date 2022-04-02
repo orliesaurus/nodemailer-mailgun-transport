@@ -1,54 +1,62 @@
 {
-  "name": "nodemailer-mailgun-transport",
-  "main": "src/index.js",
-  "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
-  "version": "2.1.3",
-  "repository": {
-    "type": "git",
-    "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
+  "version": "0.1.0",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "typings": "dist/index.d.ts",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "engines": {
+    "node": ">=10"
   },
   "scripts": {
-    "test": "standard src && faucet",
-    "prepublish": "tsc --allowJs --outFile es5/index.js src/index.js"
+    "start": "tsdx watch",
+    "build": "tsdx build",
+    "test": "tsdx test",
+    "lint": "tsdx lint",
+    "prepare": "tsdx build",
+    "size": "size-limit",
+    "analyze": "size-limit --why"
   },
-  "keywords": [
-    "email",
-    "nodemailer",
-    "mailgun"
-  ],
-  "maintainers": [
+  "peerDependencies": {},
+  "husky": {
+    "hooks": {
+      "pre-commit": "tsdx lint"
+    }
+  },
+  "prettier": {
+    "printWidth": 80,
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "es5"
+  },
+  "name": "nodemailer-mailgun",
+  "author": "Loic Mahieu",
+  "module": "dist/nodemailer-mailgun.esm.js",
+  "repository": "github:LoicMahieu/nodemailer-mailgun",
+  "size-limit": [
     {
-      "name": "orlie",
-      "email": "orlando@opensauce.it",
-      "web": "https://mailgun.com"
+      "path": "dist/nodemailer-mailgun.cjs.production.min.js",
+      "limit": "10 KB"
+    },
+    {
+      "path": "dist/nodemailer-mailgun.esm.js",
+      "limit": "10 KB"
     }
   ],
-  "bugs": {
-    "web": "https://github.com/orliesaurus/nodemailer-mailgun-transport/issues"
-  },
-  "licenses": [
-    {
-      "name": "MIT",
-      "url": "https://github.com/orliesaurus/nodemailer-mailgun-transport/blob/master/LICENSE"
-    }
-  ],
-  "homepage": "http://mailgun.com",
-  "dependencies": {
-    "consolidate": "^0.15.1",
-    "form-data": "^4.0.0",
-    "mailgun.js": "^3.3.0"
-  },
   "devDependencies": {
-    "faucet": "0.0.1",
-    "handlebars": "^4.7.6",
-    "prettier": "^1.18.2",
-    "standard": "^14.1.0",
-    "tape": "^4.11.0",
-    "tape-catch": "^1.0.6",
-    "typescript": "^3.6.2"
+    "@size-limit/preset-small-lib": "^7.0.8",
+    "@types/nodemailer": "^6.4.4",
+    "husky": "^7.0.4",
+    "nodemailer": "^6.7.3",
+    "size-limit": "^7.0.8",
+    "tsdx": "^0.14.1",
+    "tslib": "^2.3.1",
+    "typescript": "^4.6.3"
   },
-  "files": [
-    "src",
-    "es5"
-  ]
+  "dependencies": {
+    "form-data": "^4.0.0",
+    "mailgun.js": "^5.0.5"
+  }
 }
