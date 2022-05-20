@@ -49,13 +49,16 @@ const applyKeyWhitelist = mail =>
     return { ...acc, [targetKey]: mail[key] };
   }, {});
 
-const renderTemplate = async template => {
-  if (!template || typeof template === "string" || !template.name || !template.engine) {
+const renderTemplate = async mail => {
+  if (mail.html) {
+    return { template: null, html: mail.html }
+  }
+  if (!mail.template || typeof mail.template === "string" || !mail.template.name || !mail.template.engine) {
     // either there's no template or the caller is requesting a mailgun template
     // so let everything through unaltered
     return {};
   }
-  const { engine, name, context = {} } = template;
+  const { engine, name, context = {} } = mail.template;
   const html = await consolidate[engine](name, context);
   return { template: null, html };
 };
@@ -116,7 +119,7 @@ const send = mailgunSend => async ({ data: mail }, callback) => {
   try {
     const addresses = makeAllTextAddresses(mail);
     const attachments = makeMailgunAttachments(mail.attachments);
-    const template = await renderTemplate(mail.template);
+    const template = await renderTemplate(mail);
     const extendedMail = {
       ...mail,
       ...addresses,
