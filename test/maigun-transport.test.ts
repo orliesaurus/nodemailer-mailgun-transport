@@ -443,4 +443,72 @@ describe('Mailgun transport', () => {
       ]
     `);
   });
+
+  describe('Mail priority', () => {
+    it('should set high priority', async () => {
+      expect(
+        await testSuite({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          subject: 'Subject',
+          priority: 'high',
+        })
+      ).toMatchInlineSnapshot(`
+        Array [
+          "bar",
+          Object {
+            "from": "from@bar.com",
+            "h:Importance": "High",
+            "h:X-MSMail-Priority": "High",
+            "h:X-Priority": "1 (Highest)",
+            "subject": "Subject",
+            "to": "to@bar.com",
+          },
+        ]
+      `);
+    });
+
+    it('should set low priority', async () => {
+      expect(
+        await testSuite({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          subject: 'Subject',
+          priority: 'low',
+        })
+      ).toMatchInlineSnapshot(`
+        Array [
+          "bar",
+          Object {
+            "from": "from@bar.com",
+            "h:Importance": "Low",
+            "h:X-MSMail-Priority": "Low",
+            "h:X-Priority": "5 (Lowest)",
+            "subject": "Subject",
+            "to": "to@bar.com",
+          },
+        ]
+      `);
+    });
+
+    it('should set normal priority', async () => {
+      expect(
+        await testSuite({
+          from: 'from@bar.com',
+          to: 'to@bar.com',
+          subject: 'Subject',
+          priority: 'normal',
+        })
+      ).toMatchInlineSnapshot(`
+        Array [
+          "bar",
+          Object {
+            "from": "from@bar.com",
+            "subject": "Subject",
+            "to": "to@bar.com",
+          },
+        ]
+      `);
+    });
+  });
 });
