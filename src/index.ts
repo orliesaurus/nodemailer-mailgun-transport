@@ -57,6 +57,7 @@ const whitelist: (
   ['o:require-tls'],
   ['o:skip-verification'],
   ['X-Mailgun-Variables'],
+  ['priority'],
 ];
 
 const applyKeyWhitelist = (mail: SendMailOptions): MailgunMessageData =>
@@ -156,14 +157,35 @@ const transport = (options: MailgunTransportOptions): Transport => {
     send: ({ data: mail }, callback) => {
       Promise.resolve()
         .then(async () => {
-          const whitelistedMail: MailgunMessageData = applyKeyWhitelist({
+          const {
+            priority,
+            ...whitelistedMail
+          }: MailgunMessageData = applyKeyWhitelist({
             ...mail,
             ...makeAllTextAddresses(mail),
             ...makeMailgunAttachments(mail.attachments),
           });
+
+          const prioritisedMail: MailgunMessageData =
+            priority === 'high'
+              ? {
+                  ...whitelistedMail,
+                  'h:X-Priority': '1 (Highest)',
+                  'h:X-MSMail-Priority': 'High',
+                  'h:Importance': 'High',
+                }
+              : priority === 'low'
+              ? {
+                  ...whitelistedMail,
+                  'h:X-Priority': '5 (Lowest)',
+                  'h:X-MSMail-Priority': 'Low',
+                  'h:Importance': 'Low',
+                }
+              : whitelistedMail;
+
           const result = await messages.create(
             options.auth.domain || '',
-            whitelistedMail
+            prioritisedMail
           );
           return result;
         })
