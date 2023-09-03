@@ -1,6 +1,6 @@
 const Mailgun = require("mailgun.js");
 const formData = require("form-data");
-const consolidate = require("consolidate");
+const consolidate = require("@ladjs/consolidate");
 const packageData = require("../package.json");
 
 const whitelist = [
