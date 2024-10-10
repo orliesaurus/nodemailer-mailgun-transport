@@ -206,7 +206,7 @@ test("should render a template with variables and send the data as HTML", assert
     to: "to@bar.com",
     subject: "Subject",
     template: {
-      name: "test/test_template.hbs",
+      name: "src/test/test_template.hbs",
       engine: "handlebars",
       context: {
         variable1: "Passed!"
