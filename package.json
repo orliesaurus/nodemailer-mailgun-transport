@@ -12,7 +12,7 @@
     "build": "tsc",
     "lint": "standard src",
     "test": "cross-env NODE_OPTIONS='--import=tsx' faucet ./src/test/mailgun-transport.ts",
-    "prepublish": "run-s build test lint"
+    "prepublishOnly": "run-s build test lint"
   },
   "keywords": [
     "email",
