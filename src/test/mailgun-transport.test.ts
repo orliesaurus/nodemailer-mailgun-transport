@@ -1,8 +1,6 @@
-import test from "tape-catch";
 import MailgunTransport from "../lib"
 
-test("should send a mail", assert => {
-  assert.plan(3);
+test("should send a mail", () => {
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -26,7 +24,7 @@ test("should send a mail", assert => {
     "v:foo": "bar"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com",
       cc: "cc@bar.com",
@@ -48,23 +46,21 @@ test("should send a mail", assert => {
       "h:Reply-To": "reply@bar.com",
       "v:foo": "bar"
     });
+
     return {
       id: "<20111114174239.25659.5817@samples.mailgun.org>",
       message: "Queued. Thank you."
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>");
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should convert attachments to Mailgun format", assert => {
-  assert.plan(6);
+test("should convert attachments to Mailgun format", () => {
+  
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -81,27 +77,26 @@ test("should convert attachments to Mailgun format", assert => {
   };
   const mailgunStub = async result => {
     const { attachment = [] } = result;
-    assert.equal(attachment[0].data, "/");
-    assert.equal(attachment[0].filename, "CONTRIBUTORS.md");
-    assert.equal(attachment[0].contentType, "text/markdown");
-    assert.equal(attachment[0].knownLength, 122);
+    expect(attachment[0].data).toEqual("/");
+    expect(attachment[0].filename).toEqual("CONTRIBUTORS.md");
+    expect(attachment[0].contentType).toEqual("text/markdown");
+    expect(attachment[0].knownLength).toEqual(122);
+    
     return {
       id: "<20111114174239.25659.5817@samples.mailgun.org>",
       message: "Queued. Thank you."
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should convert inline attachments to Mailgun format", assert => {
-  assert.plan(6);
+test("should convert inline attachments to Mailgun format", () => {
+  
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -117,27 +112,25 @@ test("should convert inline attachments to Mailgun format", assert => {
   };
   const mailgunStub = async result => {
     const { inline = [] } = result;
-    assert.equal(inline[0].data.toString(), "hello world!");
-    assert.equal(inline[0].filename, "logo.png");
-    assert.equal(inline[0].contentType, undefined);
-    assert.equal(inline[0].knownLength, undefined);
+    expect(inline[0].data.toString()).toBe("hello world!");
+    expect(inline[0].filename).toBe("logo.png");
+    expect(inline[0].contentType).toBe(undefined);
+    expect(inline[0].knownLength).toBe(undefined);
     return {
       id: "<20111114174239.25659.5817@samples.mailgun.org>",
       message: "Queued. Thank you."
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should allow using array to assign multiple receiver", assert => {
-  assert.plan(3);
+test("should allow using array to assign multiple receiver", () => {
+  
   const data = {
     from: "from@bar.com",
     to: ["to@bar.com", "to1@bar.com"],
@@ -146,30 +139,29 @@ test("should allow using array to assign multiple receiver", assert => {
     html: "<b>Hello</b>"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com,to1@bar.com",
       subject: "Subject",
       text: "Hello",
       html: "<b>Hello</b>"
     });
+
     return {
       id: "<20111114174239.25659.5817@samples.mailgun.org>",
       message: "Queued. Thank you."
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should filter out the invalid data", assert => {
-  assert.plan(3);
+test("should filter out the invalid data", () => {
+  
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -178,29 +170,28 @@ test("should filter out the invalid data", assert => {
     foo: "bar"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com",
       subject: "Subject",
       text: "Hello"
     });
+
     return {
       id: "<20111114174239.25659.5817@samples.mailgun.org>",
       message: "Queued. Thank you."
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should render a template with variables and send the data as HTML", assert => {
-  assert.plan(3);
+test("should render a template with variables and send the data as HTML", async () => {
+  
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -215,7 +206,7 @@ test("should render a template with variables and send the data as HTML", assert
     foo: "bar"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com",
       subject: "Subject",
@@ -227,17 +218,15 @@ test("should render a template with variables and send the data as HTML", assert
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
-  MailgunTransport._send(mailgunStub)({ data }, callback);
+  await MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should pass the template variables and template to mailgun for mailgun to process", assert => {
-  assert.plan(3);
+test("should pass the template variables and template to mailgun for mailgun to process", () => {
+  
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -247,7 +236,7 @@ test("should pass the template variables and template to mailgun for mailgun to 
     foo: "bar"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com",
       subject: "Subject",
@@ -260,17 +249,15 @@ test("should pass the template variables and template to mailgun for mailgun to 
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should convert to standard address format", assert => {
-  assert.plan(3);
+test("should convert to standard address format", () => {
+  
   const data = {
     from: { name: "From", address: "from@bar.com" },
     to: { name: "To", address: "to@bar.com" },
@@ -280,7 +267,7 @@ test("should convert to standard address format", assert => {
     text: "Hello"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "From <from@bar.com>",
       to: "To <to@bar.com>",
       cc: "Cc <cc@bar.com>",
@@ -294,17 +281,15 @@ test("should convert to standard address format", assert => {
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should convert to standard address format with broken data and multiple addresses", assert => {
-  assert.plan(3);
+test("should convert to standard address format with broken data and multiple addresses", () => {
+  
   const data = {
     from: { name: null, address: "from@bar.com" },
     to: [
@@ -330,7 +315,7 @@ test("should convert to standard address format with broken data and multiple ad
     text: "Hello"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "To <to@bar.com>,to2@bar.com,to3@bar.com",
       cc: "Cc <cc@bar.com>,cc2@bar.com,cc3@bar.com",
@@ -345,17 +330,15 @@ test("should convert to standard address format with broken data and multiple ad
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should transform fields like h;Reply-To", assert => {
-  assert.plan(3);
+test("should transform fields like h;Reply-To", () => {
+  
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -364,7 +347,7 @@ test("should transform fields like h;Reply-To", assert => {
     text: "Hello"
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com",
       "h:Reply-To": "replyto@bar.com",
@@ -377,17 +360,14 @@ test("should transform fields like h;Reply-To", assert => {
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<20111114174239.25659.5817@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<20111114174239.25659.5817@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should allow custom message-id", assert => {
-  assert.plan(3);
+test("should allow custom message-id", () => {
   const data = {
     from: "from@bar.com",
     to: "to@bar.com",
@@ -396,7 +376,7 @@ test("should allow custom message-id", assert => {
     messageId: "<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>",
   };
   const mailgunStub = async result => {
-    assert.deepEqual(result, {
+    expect(result).toEqual({
       from: "from@bar.com",
       to: "to@bar.com",
       subject: "Subject",
@@ -409,17 +389,15 @@ test("should allow custom message-id", assert => {
     };
   };
   const callback = (error, result) => {
-    assert.error(error);
-    assert.equal(
-      result.messageId,
-      "<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>"
-    );
+    expect(error).toBeNull()
+    expect(
+      result.messageId).toBe("<9e5cb9a0-852d-405c-8062-61886814e64c@samples.mailgun.org>")
   };
   MailgunTransport._send(mailgunStub)({ data }, callback);
 });
 
-test("should allow custom url with host", assert => {
-  assert.plan(1);
+test("should allow custom url with host", () => {
+  
   const transport = MailgunTransport({
     auth: {
       apiKey: "api-key"
@@ -428,11 +406,11 @@ test("should allow custom url with host", assert => {
   });
   
   // @ts-expect-error - testing private property
-  assert.equal(transport.messages.request.url, "https://api.mailgun.com/");
+  expect(transport.messages.request.url).toBe("https://api.mailgun.com/");
 });
 
-test("should allow custom url with all fields", assert => {
-  assert.plan(1);
+test("should allow custom url with all fields", () => {
+  
   const transport = MailgunTransport({
     auth: {
       apiKey: "api-key"
@@ -443,11 +421,11 @@ test("should allow custom url with all fields", assert => {
   });
 
   // @ts-expect-error - testing private property
-  assert.equal(transport.messages.request.url, "http://api.mailgun.com:8080/");
+  expect(transport.messages.request.url).toBe("http://api.mailgun.com:8080/");
 });
 
-test("should allow custom url with url field", assert => {
-  assert.plan(1);
+test("should allow custom url with url field", () => {
+  
   const transport = MailgunTransport({
     auth: {
       apiKey: "api-key"
@@ -456,5 +434,5 @@ test("should allow custom url with url field", assert => {
   });
 
   // @ts-expect-error - testing private property
-  assert.equal(transport.messages.request.url, "http://api.mailgun.com:8080");
+  expect(transport.messages.request.url).toBe("http://api.mailgun.com:8080");
 });
