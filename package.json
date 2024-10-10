@@ -12,7 +12,9 @@
     "build": "tsc",
     "lint": "standard src",
     "test": "jest",
-    "prepublishOnly": "run-s build test lint"
+    "format": "prettier --write src/**/*.ts",
+    "format-check": "prettier --check src/**/*.ts",
+    "prepublishOnly": "run-s build test lint format-check"
   },
   "keywords": [
     "email",
@@ -49,7 +51,7 @@
     "@types/node": "^18.7.18",
     "handlebars": "^4.7.6",
     "jest": "^29.7.0",
-    "prettier": "^1.18.2",
+    "prettier": "^3.3.3",
     "standard": "^14.1.0",
     "typescript": "^5.6.3"
   },
