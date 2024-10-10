@@ -1,9 +1,10 @@
-const Mailgun = require("mailgun.js");
+import Mailgun from "mailgun.js";
+
 const formData = require("form-data");
 const consolidate = require("consolidate");
-const packageData = require("../package.json");
+const packageData = require("../../package.json");
 
-const whitelist = [
+const whitelist: ([string | RegExp, string]|[string | RegExp])[] = [
   ["replyTo", "h:Reply-To"],
   ["messageId", "h:Message-Id"],
   [/^h:/],
@@ -34,15 +35,16 @@ const whitelist = [
 
 const applyKeyWhitelist = mail =>
   Object.keys(mail).reduce((acc, key) => {
-    const targetKey = whitelist.reduce((result, [cond, target]) => {
+    const targetKey = whitelist.reduce<string | null>((result, [cond, target]) => {
       if (result) {
         return result;
       }
-      if ((cond.exec && cond.exec(key)) || cond === key) {
+      if ((typeof cond === 'object' && cond.exec(key)) || cond === key) {
         return target || key;
       }
       return null;
     }, null);
+  
     if (!targetKey || !mail[key]) {
       return acc;
     }
@@ -134,13 +136,26 @@ const send = mailgunSend => async ({ data: mail }, callback) => {
   }
 };
 
-const transport = (options = {}) => {
+export type MailgunTransportOptions = {
+  url?: string;
+  host?: string;
+  port?: number;
+  protocol?: string;
+  auth: {
+    api_key?: string;
+    apiKey: string;
+    domain?: string;
+  },
+  timeout?: number;
+};
+
+const transport = (options: MailgunTransportOptions) => {
   const mailgun = new Mailgun(formData);
   let url = options.url;
   if (!options.url && options.host) {
     const generatedUrl = new URL("https://" + (options.host || "api.mailgun.net"));
     generatedUrl.protocol = options.protocol || "https:";
-    generatedUrl.port = options.port || 443;
+    generatedUrl.port = (options.port || 443).toString();
     url = generatedUrl.href;
   }
   const messages = mailgun.client({
@@ -166,4 +181,4 @@ transport._makeMailgunAttachments = makeMailgunAttachments;
 transport._renderTemplate = renderTemplate;
 transport._applyKeyWhitelist = applyKeyWhitelist;
 
-module.exports = transport;
+export default transport;

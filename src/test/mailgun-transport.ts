@@ -1,5 +1,5 @@
-const test = require("tape-catch");
-const MailgunTransport = require("../src");
+import test from "tape-catch";
+import MailgunTransport from "../lib"
 
 test("should send a mail", assert => {
   assert.plan(3);
@@ -426,6 +426,8 @@ test("should allow custom url with host", assert => {
     },
     host: "api.mailgun.com"
   });
+  
+  // @ts-expect-error - testing private property
   assert.equal(transport.messages.request.url, "https://api.mailgun.com/");
 });
 
@@ -439,6 +441,8 @@ test("should allow custom url with all fields", assert => {
     protocol: "http:",
     port: 8080
   });
+
+  // @ts-expect-error - testing private property
   assert.equal(transport.messages.request.url, "http://api.mailgun.com:8080/");
 });
 
@@ -450,5 +454,7 @@ test("should allow custom url with url field", assert => {
     },
     url: "http://api.mailgun.com:8080"
   });
+
+  // @ts-expect-error - testing private property
   assert.equal(transport.messages.request.url, "http://api.mailgun.com:8080");
 });

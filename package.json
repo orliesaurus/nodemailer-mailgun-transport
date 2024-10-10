@@ -1,6 +1,7 @@
 {
   "name": "nodemailer-mailgun-transport",
-  "main": "src/index.js",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
   "version": "2.1.5",
   "repository": {
@@ -8,8 +9,10 @@
     "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
   },
   "scripts": {
-    "test": "standard src && faucet",
-    "prepublish": "tsc --allowJs --outFile es5/index.js src/index.js"
+    "build": "tsc",
+    "lint": "standard src",
+    "test": "cross-env NODE_OPTIONS='--import=tsx' faucet ./src/test/mailgun-transport.ts",
+    "prepublish": "run-s build test lint"
   },
   "keywords": [
     "email",
@@ -39,17 +42,19 @@
     "mailgun.js": "^8.0.1"
   },
   "devDependencies": {
+    "@types/mailgun-js": "^0.22.18",
     "@types/node": "^18.7.18",
+    "cross-env": "^7.0.3",
     "faucet": "0.0.1",
     "handlebars": "^4.7.6",
     "prettier": "^1.18.2",
     "standard": "^14.1.0",
     "tape": "^4.11.0",
     "tape-catch": "^1.0.6",
-    "typescript": "^3.6.2"
+    "tsx": "^4.19.1",
+    "typescript": "^5.6.3"
   },
   "files": [
-    "src",
-    "es5"
+    "dist/lib"
   ]
 }

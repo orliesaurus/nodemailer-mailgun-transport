@@ -28,3 +28,4 @@ node_modules
 .vscode
 
 es5
+dist
