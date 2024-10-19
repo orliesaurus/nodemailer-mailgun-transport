@@ -1,8 +1,9 @@
 import Mailgun from "mailgun.js"
 
-const formData = require("form-data")
-const consolidate = require("consolidate")
-const packageData = require("../../package.json")
+import formData from "form-data"
+import consolidate from "consolidate"
+
+import packageData from "../../package.json"
 
 const whitelist: ([string | RegExp, string] | [string | RegExp])[] = [
     ["replyTo", "h:Reply-To"],

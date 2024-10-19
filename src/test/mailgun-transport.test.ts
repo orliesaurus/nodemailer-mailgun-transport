@@ -1,3 +1,5 @@
+import { expect, test } from "@jest/globals"
+
 import MailgunTransport from "../lib"
 
 test("should send a mail", () => {
