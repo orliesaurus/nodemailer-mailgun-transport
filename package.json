@@ -1,6 +1,7 @@
 {
   "name": "nodemailer-mailgun-transport",
-  "main": "src/index.js",
+  "main": "dist/lib/index.js",
+  "types": "dist/lib/index.d.ts",
   "description": "A transport module to use with nodemailer to leverage Mailgun's REST API",
   "version": "2.1.5",
   "repository": {
@@ -8,8 +9,12 @@
     "url": "git@github.com:orliesaurus/nodemailer-mailgun-transport.git"
   },
   "scripts": {
-    "test": "standard src && faucet",
-    "prepublish": "tsc --allowJs --outFile es5/index.js src/index.js"
+    "build": "tsc",
+    "lint": "eslint",
+    "test": "jest",
+    "format": "prettier --write src/**/*.ts",
+    "format-check": "prettier --check src/**/*.ts",
+    "prepublishOnly": "run-s build test lint format-check"
   },
   "keywords": [
     "email",
@@ -34,22 +39,26 @@
   ],
   "homepage": "http://mailgun.com",
   "dependencies": {
-    "consolidate": "^0.15.1",
-    "form-data": "^4.0.0",
-    "mailgun.js": "^8.0.1"
+    "consolidate": "^1.0.4",
+    "form-data": "^4.0.1",
+    "mailgun.js": "^10.2.3"
   },
   "devDependencies": {
-    "@types/node": "^18.7.18",
-    "faucet": "0.0.1",
-    "handlebars": "^4.7.6",
-    "prettier": "^1.18.2",
-    "standard": "^14.1.0",
-    "tape": "^4.11.0",
-    "tape-catch": "^1.0.6",
-    "typescript": "^3.6.2"
+    "@eslint/js": "^9.13.0",
+    "@swc/core": "^1.7.36",
+    "@swc/jest": "^0.2.36",
+    "@types/eslint__js": "^8.42.3",
+    "@types/jest": "^29.5.13",
+    "@types/mailgun-js": "^0.22.18",
+    "@types/node": "^22.7.7",
+    "eslint": "^9.13.0",
+    "handlebars": "^4.7.8",
+    "jest": "^29.7.0",
+    "prettier": "^3.3.3",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.10.0"
   },
   "files": [
-    "src",
-    "es5"
+    "dist/lib"
   ]
 }
